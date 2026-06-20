@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum EstadoCliente {
+  NOVO
+  ORCAMENTO
+  CONFIRMADO
+  CONCLUIDO
+}
+
+enum EstadoOrcamento {
+  PENDENTE
+  ENVIADO
+  ACEITE
+  REJEITADO
+}
+
+enum EstadoTrabalho {
+  AGENDADO
+  EM_CURSO
+  CONCLUIDO
+  CANCELADO
+}
+
+model Cliente {
+  id        String        @id @default(cuid())
+  nome      String
+  telefone  String?
+  email     String?
+  morada    String?
+  estado    EstadoCliente @default(NOVO)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  orcamentos Orcamento[]
+  trabalhos  Trabalho[]
+}
+
+model Orcamento {
+  id        String          @id @default(cuid())
+  descricao String
+  preco     Float
+  estado    EstadoOrcamento @default(PENDENTE)
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  cliente   Cliente @relation(fields: [clienteId], references: [id])
+  clienteId String
+}
+
+model Trabalho {
+  id        String         @id @default(cuid())
+  data      DateTime
+  notas     String?
+  estado    EstadoTrabalho @default(AGENDADO)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  cliente   Cliente @relation(fields: [clienteId], references: [id])
+  clienteId String
+}
