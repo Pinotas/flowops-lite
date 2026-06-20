@@ -32,6 +32,9 @@ const ESTADO_COR: Record<EstadoTrabalho, string> = {
   CANCELADO: "bg-red-100 text-red-700",
 };
 
+// Estados que contam como "fechados" e ficam escondidos por defeito
+const ESTADOS_CONCLUIDOS: EstadoTrabalho[] = ["CONCLUIDO", "CANCELADO"];
+
 const inputClass =
   "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500";
 
@@ -50,6 +53,7 @@ export default function TrabalhosPage() {
   const [submitting, setSubmitting] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
   const [atualizandoId, setAtualizandoId] = useState<string | null>(null);
+  const [mostrarConcluidos, setMostrarConcluidos] = useState(false);
 
   const [clienteId, setClienteId] = useState("");
   const [data, setData] = useState("");
@@ -138,13 +142,24 @@ export default function TrabalhosPage() {
     }
   }
 
+  const trabalhosVisiveis = mostrarConcluidos
+    ? trabalhos
+    : trabalhos.filter((t) => !ESTADOS_CONCLUIDOS.includes(t.estado));
+
+  const totalConcluidos = trabalhos.filter((t) =>
+    ESTADOS_CONCLUIDOS.includes(t.estado)
+  ).length;
+
   return (
     <div className="min-h-screen bg-slate-50">
       <div className="mx-auto max-w-5xl px-6 py-10">
         <header className="mb-8">
           <h1 className="text-2xl font-semibold text-slate-900">Trabalhos</h1>
           <p className="mt-1 text-sm text-slate-500">
-            {trabalhos.length} trabalho{trabalhos.length !== 1 ? "s" : ""} agendado{trabalhos.length !== 1 ? "s" : ""}
+            {trabalhosVisiveis.length} trabalho{trabalhosVisiveis.length !== 1 ? "s" : ""}
+            {!mostrarConcluidos && totalConcluidos > 0
+              ? ` · ${totalConcluidos} fechado${totalConcluidos !== 1 ? "s" : ""} oculto${totalConcluidos !== 1 ? "s" : ""}`
+              : ""}
           </p>
         </header>
 
@@ -222,11 +237,28 @@ export default function TrabalhosPage() {
 
           {/* Lista */}
           <div className="rounded-xl border border-slate-200 bg-white shadow-sm">
+            <div className="flex items-center justify-between border-b border-slate-100 px-5 py-3">
+              <label className="flex items-center gap-2 text-sm text-slate-600">
+                <input
+                  type="checkbox"
+                  checked={mostrarConcluidos}
+                  onChange={(e) => setMostrarConcluidos(e.target.checked)}
+                  className="h-4 w-4 rounded border-slate-300 text-slate-900 focus:ring-slate-500"
+                />
+                Mostrar fechados (concluídos/cancelados)
+                {totalConcluidos > 0 && (
+                  <span className="text-slate-400">({totalConcluidos})</span>
+                )}
+              </label>
+            </div>
+
             {loading ? (
               <p className="p-6 text-sm text-slate-500">A carregar...</p>
-            ) : trabalhos.length === 0 ? (
+            ) : trabalhosVisiveis.length === 0 ? (
               <p className="p-6 text-sm text-slate-500">
-                Ainda não há trabalhos agendados. Cria o primeiro à esquerda.
+                {trabalhos.length === 0
+                  ? "Ainda não há trabalhos agendados. Cria o primeiro à esquerda."
+                  : "Sem trabalhos para mostrar. Ativa \"Mostrar fechados\" para veres o histórico."}
               </p>
             ) : (
               <table className="w-full text-left text-sm">
@@ -239,7 +271,7 @@ export default function TrabalhosPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {trabalhos.map((trabalho) => (
+                  {trabalhosVisiveis.map((trabalho) => (
                     <tr
                       key={trabalho.id}
                       className="border-b border-slate-100 last:border-0"

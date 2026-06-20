@@ -28,6 +28,46 @@ enum EstadoTrabalho {
   CANCELADO
 }
 
+model Empresa {
+  id        String   @id @default(cuid())
+  nome      String
+  nif       String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  utilizadores Utilizador[]
+  clientes     Cliente[]
+  orcamentos   Orcamento[]
+  trabalhos    Trabalho[]
+}
+
+model Utilizador {
+  id        String   @id @default(cuid())
+  nome      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  empresa   Empresa @relation(fields: [empresaId], references: [id])
+  empresaId String
+
+  tokensRecuperacao TokenRecuperacao[]
+}
+
+model TokenRecuperacao {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  expiraEm  DateTime
+  usado     Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  utilizador   Utilizador @relation(fields: [utilizadorId], references: [id])
+  utilizadorId String
+
+  @@index([token])
+}
+
 model Cliente {
   id        String        @id @default(cuid())
   nome      String
@@ -38,8 +78,13 @@ model Cliente {
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
 
+  empresa   Empresa @relation(fields: [empresaId], references: [id])
+  empresaId String
+
   orcamentos Orcamento[]
   trabalhos  Trabalho[]
+
+  @@index([empresaId])
 }
 
 model Orcamento {
@@ -52,6 +97,11 @@ model Orcamento {
 
   cliente   Cliente @relation(fields: [clienteId], references: [id])
   clienteId String
+
+  empresa   Empresa @relation(fields: [empresaId], references: [id])
+  empresaId String
+
+  @@index([empresaId])
 }
 
 model Trabalho {
@@ -64,4 +114,9 @@ model Trabalho {
 
   cliente   Cliente @relation(fields: [clienteId], references: [id])
   clienteId String
+
+  empresa   Empresa @relation(fields: [empresaId], references: [id])
+  empresaId String
+
+  @@index([empresaId])
 }

@@ -37,6 +37,7 @@ export default function ClientesPage() {
   const [submitting, setSubmitting] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
   const [atualizandoId, setAtualizandoId] = useState<string | null>(null);
+  const [mostrarConcluidos, setMostrarConcluidos] = useState(false);
 
   const [nome, setNome] = useState("");
   const [telefone, setTelefone] = useState("");
@@ -100,7 +101,6 @@ export default function ClientesPage() {
 
   async function handleMudarEstado(id: string, novoEstado: EstadoCliente) {
     setAtualizandoId(id);
-    // Atualização otimista: muda já na UI, sem esperar pela resposta
     setClientes((prev) =>
       prev.map((c) => (c.id === id ? { ...c, estado: novoEstado } : c))
     );
@@ -120,13 +120,24 @@ export default function ClientesPage() {
     }
   }
 
+  const clientesVisiveis = mostrarConcluidos
+    ? clientes
+    : clientes.filter((c) => c.estado !== "CONCLUIDO");
+
+  const totalConcluidos = clientes.filter(
+    (c) => c.estado === "CONCLUIDO"
+  ).length;
+
   return (
     <div className="min-h-screen bg-slate-50">
       <div className="mx-auto max-w-5xl px-6 py-10">
         <header className="mb-8">
           <h1 className="text-2xl font-semibold text-slate-900">Clientes</h1>
           <p className="mt-1 text-sm text-slate-500">
-            {clientes.length} cliente{clientes.length !== 1 ? "s" : ""} registado{clientes.length !== 1 ? "s" : ""}
+            {clientesVisiveis.length} cliente{clientesVisiveis.length !== 1 ? "s" : ""}
+            {!mostrarConcluidos && totalConcluidos > 0
+              ? ` · ${totalConcluidos} concluído${totalConcluidos !== 1 ? "s" : ""} oculto${totalConcluidos !== 1 ? "s" : ""}`
+              : ""}
           </p>
         </header>
 
@@ -202,11 +213,28 @@ export default function ClientesPage() {
 
           {/* Lista */}
           <div className="rounded-xl border border-slate-200 bg-white shadow-sm">
+            <div className="flex items-center justify-between border-b border-slate-100 px-5 py-3">
+              <label className="flex items-center gap-2 text-sm text-slate-600">
+                <input
+                  type="checkbox"
+                  checked={mostrarConcluidos}
+                  onChange={(e) => setMostrarConcluidos(e.target.checked)}
+                  className="h-4 w-4 rounded border-slate-300 text-slate-900 focus:ring-slate-500"
+                />
+                Mostrar concluídos
+                {totalConcluidos > 0 && (
+                  <span className="text-slate-400">({totalConcluidos})</span>
+                )}
+              </label>
+            </div>
+
             {loading ? (
               <p className="p-6 text-sm text-slate-500">A carregar...</p>
-            ) : clientes.length === 0 ? (
+            ) : clientesVisiveis.length === 0 ? (
               <p className="p-6 text-sm text-slate-500">
-                Ainda não há clientes. Adiciona o primeiro à esquerda.
+                {clientes.length === 0
+                  ? "Ainda não há clientes. Adiciona o primeiro à esquerda."
+                  : "Sem clientes para mostrar. Ativa \"Mostrar concluídos\" para veres o histórico."}
               </p>
             ) : (
               <table className="w-full text-left text-sm">
@@ -218,7 +246,7 @@ export default function ClientesPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {clientes.map((cliente) => (
+                  {clientesVisiveis.map((cliente) => (
                     <tr
                       key={cliente.id}
                       className="border-b border-slate-100 last:border-0"

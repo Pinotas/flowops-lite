@@ -32,6 +32,7 @@ export type TrabalhoMinAggregateOutputType = {
   createdAt: Date | null
   updatedAt: Date | null
   clienteId: string | null
+  empresaId: string | null
 }
 
 export type TrabalhoMaxAggregateOutputType = {
@@ -42,6 +43,7 @@ export type TrabalhoMaxAggregateOutputType = {
   createdAt: Date | null
   updatedAt: Date | null
   clienteId: string | null
+  empresaId: string | null
 }
 
 export type TrabalhoCountAggregateOutputType = {
@@ -52,6 +54,7 @@ export type TrabalhoCountAggregateOutputType = {
   createdAt: number
   updatedAt: number
   clienteId: number
+  empresaId: number
   _all: number
 }
 
@@ -64,6 +67,7 @@ export type TrabalhoMinAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   clienteId?: true
+  empresaId?: true
 }
 
 export type TrabalhoMaxAggregateInputType = {
@@ -74,6 +78,7 @@ export type TrabalhoMaxAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   clienteId?: true
+  empresaId?: true
 }
 
 export type TrabalhoCountAggregateInputType = {
@@ -84,6 +89,7 @@ export type TrabalhoCountAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   clienteId?: true
+  empresaId?: true
   _all?: true
 }
 
@@ -167,6 +173,7 @@ export type TrabalhoGroupByOutputType = {
   createdAt: Date
   updatedAt: Date
   clienteId: string
+  empresaId: string
   _count: TrabalhoCountAggregateOutputType | null
   _min: TrabalhoMinAggregateOutputType | null
   _max: TrabalhoMaxAggregateOutputType | null
@@ -198,7 +205,9 @@ export type TrabalhoWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Trabalho"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Trabalho"> | Date | string
   clienteId?: Prisma.StringFilter<"Trabalho"> | string
+  empresaId?: Prisma.StringFilter<"Trabalho"> | string
   cliente?: Prisma.XOR<Prisma.ClienteScalarRelationFilter, Prisma.ClienteWhereInput>
+  empresa?: Prisma.XOR<Prisma.EmpresaScalarRelationFilter, Prisma.EmpresaWhereInput>
 }
 
 export type TrabalhoOrderByWithRelationInput = {
@@ -209,7 +218,9 @@ export type TrabalhoOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   clienteId?: Prisma.SortOrder
+  empresaId?: Prisma.SortOrder
   cliente?: Prisma.ClienteOrderByWithRelationInput
+  empresa?: Prisma.EmpresaOrderByWithRelationInput
 }
 
 export type TrabalhoWhereUniqueInput = Prisma.AtLeast<{
@@ -223,7 +234,9 @@ export type TrabalhoWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Trabalho"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Trabalho"> | Date | string
   clienteId?: Prisma.StringFilter<"Trabalho"> | string
+  empresaId?: Prisma.StringFilter<"Trabalho"> | string
   cliente?: Prisma.XOR<Prisma.ClienteScalarRelationFilter, Prisma.ClienteWhereInput>
+  empresa?: Prisma.XOR<Prisma.EmpresaScalarRelationFilter, Prisma.EmpresaWhereInput>
 }, "id">
 
 export type TrabalhoOrderByWithAggregationInput = {
@@ -234,6 +247,7 @@ export type TrabalhoOrderByWithAggregationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   clienteId?: Prisma.SortOrder
+  empresaId?: Prisma.SortOrder
   _count?: Prisma.TrabalhoCountOrderByAggregateInput
   _max?: Prisma.TrabalhoMaxOrderByAggregateInput
   _min?: Prisma.TrabalhoMinOrderByAggregateInput
@@ -250,6 +264,7 @@ export type TrabalhoScalarWhereWithAggregatesInput = {
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Trabalho"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Trabalho"> | Date | string
   clienteId?: Prisma.StringWithAggregatesFilter<"Trabalho"> | string
+  empresaId?: Prisma.StringWithAggregatesFilter<"Trabalho"> | string
 }
 
 export type TrabalhoCreateInput = {
@@ -260,6 +275,7 @@ export type TrabalhoCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   cliente: Prisma.ClienteCreateNestedOneWithoutTrabalhosInput
+  empresa: Prisma.EmpresaCreateNestedOneWithoutTrabalhosInput
 }
 
 export type TrabalhoUncheckedCreateInput = {
@@ -270,6 +286,7 @@ export type TrabalhoUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   clienteId: string
+  empresaId: string
 }
 
 export type TrabalhoUpdateInput = {
@@ -280,6 +297,7 @@ export type TrabalhoUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cliente?: Prisma.ClienteUpdateOneRequiredWithoutTrabalhosNestedInput
+  empresa?: Prisma.EmpresaUpdateOneRequiredWithoutTrabalhosNestedInput
 }
 
 export type TrabalhoUncheckedUpdateInput = {
@@ -290,6 +308,7 @@ export type TrabalhoUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clienteId?: Prisma.StringFieldUpdateOperationsInput | string
+  empresaId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type TrabalhoCreateManyInput = {
@@ -300,6 +319,7 @@ export type TrabalhoCreateManyInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   clienteId: string
+  empresaId: string
 }
 
 export type TrabalhoUpdateManyMutationInput = {
@@ -319,6 +339,7 @@ export type TrabalhoUncheckedUpdateManyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clienteId?: Prisma.StringFieldUpdateOperationsInput | string
+  empresaId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type TrabalhoListRelationFilter = {
@@ -339,6 +360,7 @@ export type TrabalhoCountOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   clienteId?: Prisma.SortOrder
+  empresaId?: Prisma.SortOrder
 }
 
 export type TrabalhoMaxOrderByAggregateInput = {
@@ -349,6 +371,7 @@ export type TrabalhoMaxOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   clienteId?: Prisma.SortOrder
+  empresaId?: Prisma.SortOrder
 }
 
 export type TrabalhoMinOrderByAggregateInput = {
@@ -359,6 +382,49 @@ export type TrabalhoMinOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   clienteId?: Prisma.SortOrder
+  empresaId?: Prisma.SortOrder
+}
+
+export type TrabalhoCreateNestedManyWithoutEmpresaInput = {
+  create?: Prisma.XOR<Prisma.TrabalhoCreateWithoutEmpresaInput, Prisma.TrabalhoUncheckedCreateWithoutEmpresaInput> | Prisma.TrabalhoCreateWithoutEmpresaInput[] | Prisma.TrabalhoUncheckedCreateWithoutEmpresaInput[]
+  connectOrCreate?: Prisma.TrabalhoCreateOrConnectWithoutEmpresaInput | Prisma.TrabalhoCreateOrConnectWithoutEmpresaInput[]
+  createMany?: Prisma.TrabalhoCreateManyEmpresaInputEnvelope
+  connect?: Prisma.TrabalhoWhereUniqueInput | Prisma.TrabalhoWhereUniqueInput[]
+}
+
+export type TrabalhoUncheckedCreateNestedManyWithoutEmpresaInput = {
+  create?: Prisma.XOR<Prisma.TrabalhoCreateWithoutEmpresaInput, Prisma.TrabalhoUncheckedCreateWithoutEmpresaInput> | Prisma.TrabalhoCreateWithoutEmpresaInput[] | Prisma.TrabalhoUncheckedCreateWithoutEmpresaInput[]
+  connectOrCreate?: Prisma.TrabalhoCreateOrConnectWithoutEmpresaInput | Prisma.TrabalhoCreateOrConnectWithoutEmpresaInput[]
+  createMany?: Prisma.TrabalhoCreateManyEmpresaInputEnvelope
+  connect?: Prisma.TrabalhoWhereUniqueInput | Prisma.TrabalhoWhereUniqueInput[]
+}
+
+export type TrabalhoUpdateManyWithoutEmpresaNestedInput = {
+  create?: Prisma.XOR<Prisma.TrabalhoCreateWithoutEmpresaInput, Prisma.TrabalhoUncheckedCreateWithoutEmpresaInput> | Prisma.TrabalhoCreateWithoutEmpresaInput[] | Prisma.TrabalhoUncheckedCreateWithoutEmpresaInput[]
+  connectOrCreate?: Prisma.TrabalhoCreateOrConnectWithoutEmpresaInput | Prisma.TrabalhoCreateOrConnectWithoutEmpresaInput[]
+  upsert?: Prisma.TrabalhoUpsertWithWhereUniqueWithoutEmpresaInput | Prisma.TrabalhoUpsertWithWhereUniqueWithoutEmpresaInput[]
+  createMany?: Prisma.TrabalhoCreateManyEmpresaInputEnvelope
+  set?: Prisma.TrabalhoWhereUniqueInput | Prisma.TrabalhoWhereUniqueInput[]
+  disconnect?: Prisma.TrabalhoWhereUniqueInput | Prisma.TrabalhoWhereUniqueInput[]
+  delete?: Prisma.TrabalhoWhereUniqueInput | Prisma.TrabalhoWhereUniqueInput[]
+  connect?: Prisma.TrabalhoWhereUniqueInput | Prisma.TrabalhoWhereUniqueInput[]
+  update?: Prisma.TrabalhoUpdateWithWhereUniqueWithoutEmpresaInput | Prisma.TrabalhoUpdateWithWhereUniqueWithoutEmpresaInput[]
+  updateMany?: Prisma.TrabalhoUpdateManyWithWhereWithoutEmpresaInput | Prisma.TrabalhoUpdateManyWithWhereWithoutEmpresaInput[]
+  deleteMany?: Prisma.TrabalhoScalarWhereInput | Prisma.TrabalhoScalarWhereInput[]
+}
+
+export type TrabalhoUncheckedUpdateManyWithoutEmpresaNestedInput = {
+  create?: Prisma.XOR<Prisma.TrabalhoCreateWithoutEmpresaInput, Prisma.TrabalhoUncheckedCreateWithoutEmpresaInput> | Prisma.TrabalhoCreateWithoutEmpresaInput[] | Prisma.TrabalhoUncheckedCreateWithoutEmpresaInput[]
+  connectOrCreate?: Prisma.TrabalhoCreateOrConnectWithoutEmpresaInput | Prisma.TrabalhoCreateOrConnectWithoutEmpresaInput[]
+  upsert?: Prisma.TrabalhoUpsertWithWhereUniqueWithoutEmpresaInput | Prisma.TrabalhoUpsertWithWhereUniqueWithoutEmpresaInput[]
+  createMany?: Prisma.TrabalhoCreateManyEmpresaInputEnvelope
+  set?: Prisma.TrabalhoWhereUniqueInput | Prisma.TrabalhoWhereUniqueInput[]
+  disconnect?: Prisma.TrabalhoWhereUniqueInput | Prisma.TrabalhoWhereUniqueInput[]
+  delete?: Prisma.TrabalhoWhereUniqueInput | Prisma.TrabalhoWhereUniqueInput[]
+  connect?: Prisma.TrabalhoWhereUniqueInput | Prisma.TrabalhoWhereUniqueInput[]
+  update?: Prisma.TrabalhoUpdateWithWhereUniqueWithoutEmpresaInput | Prisma.TrabalhoUpdateWithWhereUniqueWithoutEmpresaInput[]
+  updateMany?: Prisma.TrabalhoUpdateManyWithWhereWithoutEmpresaInput | Prisma.TrabalhoUpdateManyWithWhereWithoutEmpresaInput[]
+  deleteMany?: Prisma.TrabalhoScalarWhereInput | Prisma.TrabalhoScalarWhereInput[]
 }
 
 export type TrabalhoCreateNestedManyWithoutClienteInput = {
@@ -407,6 +473,66 @@ export type EnumEstadoTrabalhoFieldUpdateOperationsInput = {
   set?: $Enums.EstadoTrabalho
 }
 
+export type TrabalhoCreateWithoutEmpresaInput = {
+  id?: string
+  data: Date | string
+  notas?: string | null
+  estado?: $Enums.EstadoTrabalho
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  cliente: Prisma.ClienteCreateNestedOneWithoutTrabalhosInput
+}
+
+export type TrabalhoUncheckedCreateWithoutEmpresaInput = {
+  id?: string
+  data: Date | string
+  notas?: string | null
+  estado?: $Enums.EstadoTrabalho
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  clienteId: string
+}
+
+export type TrabalhoCreateOrConnectWithoutEmpresaInput = {
+  where: Prisma.TrabalhoWhereUniqueInput
+  create: Prisma.XOR<Prisma.TrabalhoCreateWithoutEmpresaInput, Prisma.TrabalhoUncheckedCreateWithoutEmpresaInput>
+}
+
+export type TrabalhoCreateManyEmpresaInputEnvelope = {
+  data: Prisma.TrabalhoCreateManyEmpresaInput | Prisma.TrabalhoCreateManyEmpresaInput[]
+  skipDuplicates?: boolean
+}
+
+export type TrabalhoUpsertWithWhereUniqueWithoutEmpresaInput = {
+  where: Prisma.TrabalhoWhereUniqueInput
+  update: Prisma.XOR<Prisma.TrabalhoUpdateWithoutEmpresaInput, Prisma.TrabalhoUncheckedUpdateWithoutEmpresaInput>
+  create: Prisma.XOR<Prisma.TrabalhoCreateWithoutEmpresaInput, Prisma.TrabalhoUncheckedCreateWithoutEmpresaInput>
+}
+
+export type TrabalhoUpdateWithWhereUniqueWithoutEmpresaInput = {
+  where: Prisma.TrabalhoWhereUniqueInput
+  data: Prisma.XOR<Prisma.TrabalhoUpdateWithoutEmpresaInput, Prisma.TrabalhoUncheckedUpdateWithoutEmpresaInput>
+}
+
+export type TrabalhoUpdateManyWithWhereWithoutEmpresaInput = {
+  where: Prisma.TrabalhoScalarWhereInput
+  data: Prisma.XOR<Prisma.TrabalhoUpdateManyMutationInput, Prisma.TrabalhoUncheckedUpdateManyWithoutEmpresaInput>
+}
+
+export type TrabalhoScalarWhereInput = {
+  AND?: Prisma.TrabalhoScalarWhereInput | Prisma.TrabalhoScalarWhereInput[]
+  OR?: Prisma.TrabalhoScalarWhereInput[]
+  NOT?: Prisma.TrabalhoScalarWhereInput | Prisma.TrabalhoScalarWhereInput[]
+  id?: Prisma.StringFilter<"Trabalho"> | string
+  data?: Prisma.DateTimeFilter<"Trabalho"> | Date | string
+  notas?: Prisma.StringNullableFilter<"Trabalho"> | string | null
+  estado?: Prisma.EnumEstadoTrabalhoFilter<"Trabalho"> | $Enums.EstadoTrabalho
+  createdAt?: Prisma.DateTimeFilter<"Trabalho"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Trabalho"> | Date | string
+  clienteId?: Prisma.StringFilter<"Trabalho"> | string
+  empresaId?: Prisma.StringFilter<"Trabalho"> | string
+}
+
 export type TrabalhoCreateWithoutClienteInput = {
   id?: string
   data: Date | string
@@ -414,6 +540,7 @@ export type TrabalhoCreateWithoutClienteInput = {
   estado?: $Enums.EstadoTrabalho
   createdAt?: Date | string
   updatedAt?: Date | string
+  empresa: Prisma.EmpresaCreateNestedOneWithoutTrabalhosInput
 }
 
 export type TrabalhoUncheckedCreateWithoutClienteInput = {
@@ -423,6 +550,7 @@ export type TrabalhoUncheckedCreateWithoutClienteInput = {
   estado?: $Enums.EstadoTrabalho
   createdAt?: Date | string
   updatedAt?: Date | string
+  empresaId: string
 }
 
 export type TrabalhoCreateOrConnectWithoutClienteInput = {
@@ -451,17 +579,44 @@ export type TrabalhoUpdateManyWithWhereWithoutClienteInput = {
   data: Prisma.XOR<Prisma.TrabalhoUpdateManyMutationInput, Prisma.TrabalhoUncheckedUpdateManyWithoutClienteInput>
 }
 
-export type TrabalhoScalarWhereInput = {
-  AND?: Prisma.TrabalhoScalarWhereInput | Prisma.TrabalhoScalarWhereInput[]
-  OR?: Prisma.TrabalhoScalarWhereInput[]
-  NOT?: Prisma.TrabalhoScalarWhereInput | Prisma.TrabalhoScalarWhereInput[]
-  id?: Prisma.StringFilter<"Trabalho"> | string
-  data?: Prisma.DateTimeFilter<"Trabalho"> | Date | string
-  notas?: Prisma.StringNullableFilter<"Trabalho"> | string | null
-  estado?: Prisma.EnumEstadoTrabalhoFilter<"Trabalho"> | $Enums.EstadoTrabalho
-  createdAt?: Prisma.DateTimeFilter<"Trabalho"> | Date | string
-  updatedAt?: Prisma.DateTimeFilter<"Trabalho"> | Date | string
-  clienteId?: Prisma.StringFilter<"Trabalho"> | string
+export type TrabalhoCreateManyEmpresaInput = {
+  id?: string
+  data: Date | string
+  notas?: string | null
+  estado?: $Enums.EstadoTrabalho
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  clienteId: string
+}
+
+export type TrabalhoUpdateWithoutEmpresaInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  data?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  estado?: Prisma.EnumEstadoTrabalhoFieldUpdateOperationsInput | $Enums.EstadoTrabalho
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cliente?: Prisma.ClienteUpdateOneRequiredWithoutTrabalhosNestedInput
+}
+
+export type TrabalhoUncheckedUpdateWithoutEmpresaInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  data?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  estado?: Prisma.EnumEstadoTrabalhoFieldUpdateOperationsInput | $Enums.EstadoTrabalho
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  clienteId?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
+export type TrabalhoUncheckedUpdateManyWithoutEmpresaInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  data?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  estado?: Prisma.EnumEstadoTrabalhoFieldUpdateOperationsInput | $Enums.EstadoTrabalho
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  clienteId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type TrabalhoCreateManyClienteInput = {
@@ -471,6 +626,7 @@ export type TrabalhoCreateManyClienteInput = {
   estado?: $Enums.EstadoTrabalho
   createdAt?: Date | string
   updatedAt?: Date | string
+  empresaId: string
 }
 
 export type TrabalhoUpdateWithoutClienteInput = {
@@ -480,6 +636,7 @@ export type TrabalhoUpdateWithoutClienteInput = {
   estado?: Prisma.EnumEstadoTrabalhoFieldUpdateOperationsInput | $Enums.EstadoTrabalho
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  empresa?: Prisma.EmpresaUpdateOneRequiredWithoutTrabalhosNestedInput
 }
 
 export type TrabalhoUncheckedUpdateWithoutClienteInput = {
@@ -489,6 +646,7 @@ export type TrabalhoUncheckedUpdateWithoutClienteInput = {
   estado?: Prisma.EnumEstadoTrabalhoFieldUpdateOperationsInput | $Enums.EstadoTrabalho
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  empresaId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type TrabalhoUncheckedUpdateManyWithoutClienteInput = {
@@ -498,6 +656,7 @@ export type TrabalhoUncheckedUpdateManyWithoutClienteInput = {
   estado?: Prisma.EnumEstadoTrabalhoFieldUpdateOperationsInput | $Enums.EstadoTrabalho
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  empresaId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 
@@ -510,7 +669,9 @@ export type TrabalhoSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   createdAt?: boolean
   updatedAt?: boolean
   clienteId?: boolean
+  empresaId?: boolean
   cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
+  empresa?: boolean | Prisma.EmpresaDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["trabalho"]>
 
 export type TrabalhoSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -521,7 +682,9 @@ export type TrabalhoSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   createdAt?: boolean
   updatedAt?: boolean
   clienteId?: boolean
+  empresaId?: boolean
   cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
+  empresa?: boolean | Prisma.EmpresaDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["trabalho"]>
 
 export type TrabalhoSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -532,7 +695,9 @@ export type TrabalhoSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   createdAt?: boolean
   updatedAt?: boolean
   clienteId?: boolean
+  empresaId?: boolean
   cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
+  empresa?: boolean | Prisma.EmpresaDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["trabalho"]>
 
 export type TrabalhoSelectScalar = {
@@ -543,23 +708,28 @@ export type TrabalhoSelectScalar = {
   createdAt?: boolean
   updatedAt?: boolean
   clienteId?: boolean
+  empresaId?: boolean
 }
 
-export type TrabalhoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "data" | "notas" | "estado" | "createdAt" | "updatedAt" | "clienteId", ExtArgs["result"]["trabalho"]>
+export type TrabalhoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "data" | "notas" | "estado" | "createdAt" | "updatedAt" | "clienteId" | "empresaId", ExtArgs["result"]["trabalho"]>
 export type TrabalhoInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
+  empresa?: boolean | Prisma.EmpresaDefaultArgs<ExtArgs>
 }
 export type TrabalhoIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
+  empresa?: boolean | Prisma.EmpresaDefaultArgs<ExtArgs>
 }
 export type TrabalhoIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
+  empresa?: boolean | Prisma.EmpresaDefaultArgs<ExtArgs>
 }
 
 export type $TrabalhoPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Trabalho"
   objects: {
     cliente: Prisma.$ClientePayload<ExtArgs>
+    empresa: Prisma.$EmpresaPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -569,6 +739,7 @@ export type $TrabalhoPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     createdAt: Date
     updatedAt: Date
     clienteId: string
+    empresaId: string
   }, ExtArgs["result"]["trabalho"]>
   composites: {}
 }
@@ -964,6 +1135,7 @@ readonly fields: TrabalhoFieldRefs;
 export interface Prisma__TrabalhoClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   cliente<T extends Prisma.ClienteDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClienteDefaultArgs<ExtArgs>>): Prisma.Prisma__ClienteClient<runtime.Types.Result.GetResult<Prisma.$ClientePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  empresa<T extends Prisma.EmpresaDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmpresaDefaultArgs<ExtArgs>>): Prisma.Prisma__EmpresaClient<runtime.Types.Result.GetResult<Prisma.$EmpresaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1000,6 +1172,7 @@ export interface TrabalhoFieldRefs {
   readonly createdAt: Prisma.FieldRef<"Trabalho", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Trabalho", 'DateTime'>
   readonly clienteId: Prisma.FieldRef<"Trabalho", 'String'>
+  readonly empresaId: Prisma.FieldRef<"Trabalho", 'String'>
 }
     
 

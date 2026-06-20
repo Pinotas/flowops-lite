@@ -8,6 +8,9 @@
  *
  * 🟢 You can import this file directly.
  */
+export type * from './models/Empresa'
+export type * from './models/Utilizador'
+export type * from './models/TokenRecuperacao'
 export type * from './models/Cliente'
 export type * from './models/Orcamento'
 export type * from './models/Trabalho'

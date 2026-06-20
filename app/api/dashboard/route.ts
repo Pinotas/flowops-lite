@@ -1,7 +1,13 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getEmpresaId } from "@/lib/api-auth";
 
 export async function GET() {
+  const empresaId = await getEmpresaId();
+  if (!empresaId) {
+    return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
+  }
+
   try {
     const inicioHoje = new Date();
     inicioHoje.setHours(0, 0, 0, 0);
@@ -12,17 +18,18 @@ export async function GET() {
     const [clientesNovos, orcamentosPendentes, trabalhosHoje] =
       await Promise.all([
         prisma.cliente.findMany({
-          where: { estado: "NOVO" },
+          where: { empresaId, estado: "NOVO" },
           orderBy: { createdAt: "desc" },
           take: 5,
         }),
         prisma.orcamento.findMany({
-          where: { estado: "PENDENTE" },
+          where: { empresaId, estado: "PENDENTE" },
           include: { cliente: true },
           orderBy: { createdAt: "desc" },
         }),
         prisma.trabalho.findMany({
           where: {
+            empresaId,
             data: { gte: inicioHoje, lte: fimHoje },
           },
           include: { cliente: true },
@@ -32,10 +39,10 @@ export async function GET() {
 
     const [totalClientes, totalOrcamentosPendentes, totalTrabalhosHoje] =
       await Promise.all([
-        prisma.cliente.count(),
-        prisma.orcamento.count({ where: { estado: "PENDENTE" } }),
+        prisma.cliente.count({ where: { empresaId } }),
+        prisma.orcamento.count({ where: { empresaId, estado: "PENDENTE" } }),
         prisma.trabalho.count({
-          where: { data: { gte: inicioHoje, lte: fimHoje } },
+          where: { empresaId, data: { gte: inicioHoje, lte: fimHoje } },
         }),
       ]);
 

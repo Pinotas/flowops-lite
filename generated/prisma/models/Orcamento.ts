@@ -42,6 +42,7 @@ export type OrcamentoMinAggregateOutputType = {
   createdAt: Date | null
   updatedAt: Date | null
   clienteId: string | null
+  empresaId: string | null
 }
 
 export type OrcamentoMaxAggregateOutputType = {
@@ -52,6 +53,7 @@ export type OrcamentoMaxAggregateOutputType = {
   createdAt: Date | null
   updatedAt: Date | null
   clienteId: string | null
+  empresaId: string | null
 }
 
 export type OrcamentoCountAggregateOutputType = {
@@ -62,6 +64,7 @@ export type OrcamentoCountAggregateOutputType = {
   createdAt: number
   updatedAt: number
   clienteId: number
+  empresaId: number
   _all: number
 }
 
@@ -82,6 +85,7 @@ export type OrcamentoMinAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   clienteId?: true
+  empresaId?: true
 }
 
 export type OrcamentoMaxAggregateInputType = {
@@ -92,6 +96,7 @@ export type OrcamentoMaxAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   clienteId?: true
+  empresaId?: true
 }
 
 export type OrcamentoCountAggregateInputType = {
@@ -102,6 +107,7 @@ export type OrcamentoCountAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   clienteId?: true
+  empresaId?: true
   _all?: true
 }
 
@@ -199,6 +205,7 @@ export type OrcamentoGroupByOutputType = {
   createdAt: Date
   updatedAt: Date
   clienteId: string
+  empresaId: string
   _count: OrcamentoCountAggregateOutputType | null
   _avg: OrcamentoAvgAggregateOutputType | null
   _sum: OrcamentoSumAggregateOutputType | null
@@ -232,7 +239,9 @@ export type OrcamentoWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Orcamento"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Orcamento"> | Date | string
   clienteId?: Prisma.StringFilter<"Orcamento"> | string
+  empresaId?: Prisma.StringFilter<"Orcamento"> | string
   cliente?: Prisma.XOR<Prisma.ClienteScalarRelationFilter, Prisma.ClienteWhereInput>
+  empresa?: Prisma.XOR<Prisma.EmpresaScalarRelationFilter, Prisma.EmpresaWhereInput>
 }
 
 export type OrcamentoOrderByWithRelationInput = {
@@ -243,7 +252,9 @@ export type OrcamentoOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   clienteId?: Prisma.SortOrder
+  empresaId?: Prisma.SortOrder
   cliente?: Prisma.ClienteOrderByWithRelationInput
+  empresa?: Prisma.EmpresaOrderByWithRelationInput
 }
 
 export type OrcamentoWhereUniqueInput = Prisma.AtLeast<{
@@ -257,7 +268,9 @@ export type OrcamentoWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Orcamento"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Orcamento"> | Date | string
   clienteId?: Prisma.StringFilter<"Orcamento"> | string
+  empresaId?: Prisma.StringFilter<"Orcamento"> | string
   cliente?: Prisma.XOR<Prisma.ClienteScalarRelationFilter, Prisma.ClienteWhereInput>
+  empresa?: Prisma.XOR<Prisma.EmpresaScalarRelationFilter, Prisma.EmpresaWhereInput>
 }, "id">
 
 export type OrcamentoOrderByWithAggregationInput = {
@@ -268,6 +281,7 @@ export type OrcamentoOrderByWithAggregationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   clienteId?: Prisma.SortOrder
+  empresaId?: Prisma.SortOrder
   _count?: Prisma.OrcamentoCountOrderByAggregateInput
   _avg?: Prisma.OrcamentoAvgOrderByAggregateInput
   _max?: Prisma.OrcamentoMaxOrderByAggregateInput
@@ -286,6 +300,7 @@ export type OrcamentoScalarWhereWithAggregatesInput = {
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Orcamento"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Orcamento"> | Date | string
   clienteId?: Prisma.StringWithAggregatesFilter<"Orcamento"> | string
+  empresaId?: Prisma.StringWithAggregatesFilter<"Orcamento"> | string
 }
 
 export type OrcamentoCreateInput = {
@@ -296,6 +311,7 @@ export type OrcamentoCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   cliente: Prisma.ClienteCreateNestedOneWithoutOrcamentosInput
+  empresa: Prisma.EmpresaCreateNestedOneWithoutOrcamentosInput
 }
 
 export type OrcamentoUncheckedCreateInput = {
@@ -306,6 +322,7 @@ export type OrcamentoUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   clienteId: string
+  empresaId: string
 }
 
 export type OrcamentoUpdateInput = {
@@ -316,6 +333,7 @@ export type OrcamentoUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cliente?: Prisma.ClienteUpdateOneRequiredWithoutOrcamentosNestedInput
+  empresa?: Prisma.EmpresaUpdateOneRequiredWithoutOrcamentosNestedInput
 }
 
 export type OrcamentoUncheckedUpdateInput = {
@@ -326,6 +344,7 @@ export type OrcamentoUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clienteId?: Prisma.StringFieldUpdateOperationsInput | string
+  empresaId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type OrcamentoCreateManyInput = {
@@ -336,6 +355,7 @@ export type OrcamentoCreateManyInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   clienteId: string
+  empresaId: string
 }
 
 export type OrcamentoUpdateManyMutationInput = {
@@ -355,6 +375,7 @@ export type OrcamentoUncheckedUpdateManyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clienteId?: Prisma.StringFieldUpdateOperationsInput | string
+  empresaId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type OrcamentoListRelationFilter = {
@@ -375,6 +396,7 @@ export type OrcamentoCountOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   clienteId?: Prisma.SortOrder
+  empresaId?: Prisma.SortOrder
 }
 
 export type OrcamentoAvgOrderByAggregateInput = {
@@ -389,6 +411,7 @@ export type OrcamentoMaxOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   clienteId?: Prisma.SortOrder
+  empresaId?: Prisma.SortOrder
 }
 
 export type OrcamentoMinOrderByAggregateInput = {
@@ -399,10 +422,53 @@ export type OrcamentoMinOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   clienteId?: Prisma.SortOrder
+  empresaId?: Prisma.SortOrder
 }
 
 export type OrcamentoSumOrderByAggregateInput = {
   preco?: Prisma.SortOrder
+}
+
+export type OrcamentoCreateNestedManyWithoutEmpresaInput = {
+  create?: Prisma.XOR<Prisma.OrcamentoCreateWithoutEmpresaInput, Prisma.OrcamentoUncheckedCreateWithoutEmpresaInput> | Prisma.OrcamentoCreateWithoutEmpresaInput[] | Prisma.OrcamentoUncheckedCreateWithoutEmpresaInput[]
+  connectOrCreate?: Prisma.OrcamentoCreateOrConnectWithoutEmpresaInput | Prisma.OrcamentoCreateOrConnectWithoutEmpresaInput[]
+  createMany?: Prisma.OrcamentoCreateManyEmpresaInputEnvelope
+  connect?: Prisma.OrcamentoWhereUniqueInput | Prisma.OrcamentoWhereUniqueInput[]
+}
+
+export type OrcamentoUncheckedCreateNestedManyWithoutEmpresaInput = {
+  create?: Prisma.XOR<Prisma.OrcamentoCreateWithoutEmpresaInput, Prisma.OrcamentoUncheckedCreateWithoutEmpresaInput> | Prisma.OrcamentoCreateWithoutEmpresaInput[] | Prisma.OrcamentoUncheckedCreateWithoutEmpresaInput[]
+  connectOrCreate?: Prisma.OrcamentoCreateOrConnectWithoutEmpresaInput | Prisma.OrcamentoCreateOrConnectWithoutEmpresaInput[]
+  createMany?: Prisma.OrcamentoCreateManyEmpresaInputEnvelope
+  connect?: Prisma.OrcamentoWhereUniqueInput | Prisma.OrcamentoWhereUniqueInput[]
+}
+
+export type OrcamentoUpdateManyWithoutEmpresaNestedInput = {
+  create?: Prisma.XOR<Prisma.OrcamentoCreateWithoutEmpresaInput, Prisma.OrcamentoUncheckedCreateWithoutEmpresaInput> | Prisma.OrcamentoCreateWithoutEmpresaInput[] | Prisma.OrcamentoUncheckedCreateWithoutEmpresaInput[]
+  connectOrCreate?: Prisma.OrcamentoCreateOrConnectWithoutEmpresaInput | Prisma.OrcamentoCreateOrConnectWithoutEmpresaInput[]
+  upsert?: Prisma.OrcamentoUpsertWithWhereUniqueWithoutEmpresaInput | Prisma.OrcamentoUpsertWithWhereUniqueWithoutEmpresaInput[]
+  createMany?: Prisma.OrcamentoCreateManyEmpresaInputEnvelope
+  set?: Prisma.OrcamentoWhereUniqueInput | Prisma.OrcamentoWhereUniqueInput[]
+  disconnect?: Prisma.OrcamentoWhereUniqueInput | Prisma.OrcamentoWhereUniqueInput[]
+  delete?: Prisma.OrcamentoWhereUniqueInput | Prisma.OrcamentoWhereUniqueInput[]
+  connect?: Prisma.OrcamentoWhereUniqueInput | Prisma.OrcamentoWhereUniqueInput[]
+  update?: Prisma.OrcamentoUpdateWithWhereUniqueWithoutEmpresaInput | Prisma.OrcamentoUpdateWithWhereUniqueWithoutEmpresaInput[]
+  updateMany?: Prisma.OrcamentoUpdateManyWithWhereWithoutEmpresaInput | Prisma.OrcamentoUpdateManyWithWhereWithoutEmpresaInput[]
+  deleteMany?: Prisma.OrcamentoScalarWhereInput | Prisma.OrcamentoScalarWhereInput[]
+}
+
+export type OrcamentoUncheckedUpdateManyWithoutEmpresaNestedInput = {
+  create?: Prisma.XOR<Prisma.OrcamentoCreateWithoutEmpresaInput, Prisma.OrcamentoUncheckedCreateWithoutEmpresaInput> | Prisma.OrcamentoCreateWithoutEmpresaInput[] | Prisma.OrcamentoUncheckedCreateWithoutEmpresaInput[]
+  connectOrCreate?: Prisma.OrcamentoCreateOrConnectWithoutEmpresaInput | Prisma.OrcamentoCreateOrConnectWithoutEmpresaInput[]
+  upsert?: Prisma.OrcamentoUpsertWithWhereUniqueWithoutEmpresaInput | Prisma.OrcamentoUpsertWithWhereUniqueWithoutEmpresaInput[]
+  createMany?: Prisma.OrcamentoCreateManyEmpresaInputEnvelope
+  set?: Prisma.OrcamentoWhereUniqueInput | Prisma.OrcamentoWhereUniqueInput[]
+  disconnect?: Prisma.OrcamentoWhereUniqueInput | Prisma.OrcamentoWhereUniqueInput[]
+  delete?: Prisma.OrcamentoWhereUniqueInput | Prisma.OrcamentoWhereUniqueInput[]
+  connect?: Prisma.OrcamentoWhereUniqueInput | Prisma.OrcamentoWhereUniqueInput[]
+  update?: Prisma.OrcamentoUpdateWithWhereUniqueWithoutEmpresaInput | Prisma.OrcamentoUpdateWithWhereUniqueWithoutEmpresaInput[]
+  updateMany?: Prisma.OrcamentoUpdateManyWithWhereWithoutEmpresaInput | Prisma.OrcamentoUpdateManyWithWhereWithoutEmpresaInput[]
+  deleteMany?: Prisma.OrcamentoScalarWhereInput | Prisma.OrcamentoScalarWhereInput[]
 }
 
 export type OrcamentoCreateNestedManyWithoutClienteInput = {
@@ -459,6 +525,66 @@ export type EnumEstadoOrcamentoFieldUpdateOperationsInput = {
   set?: $Enums.EstadoOrcamento
 }
 
+export type OrcamentoCreateWithoutEmpresaInput = {
+  id?: string
+  descricao: string
+  preco: number
+  estado?: $Enums.EstadoOrcamento
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  cliente: Prisma.ClienteCreateNestedOneWithoutOrcamentosInput
+}
+
+export type OrcamentoUncheckedCreateWithoutEmpresaInput = {
+  id?: string
+  descricao: string
+  preco: number
+  estado?: $Enums.EstadoOrcamento
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  clienteId: string
+}
+
+export type OrcamentoCreateOrConnectWithoutEmpresaInput = {
+  where: Prisma.OrcamentoWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrcamentoCreateWithoutEmpresaInput, Prisma.OrcamentoUncheckedCreateWithoutEmpresaInput>
+}
+
+export type OrcamentoCreateManyEmpresaInputEnvelope = {
+  data: Prisma.OrcamentoCreateManyEmpresaInput | Prisma.OrcamentoCreateManyEmpresaInput[]
+  skipDuplicates?: boolean
+}
+
+export type OrcamentoUpsertWithWhereUniqueWithoutEmpresaInput = {
+  where: Prisma.OrcamentoWhereUniqueInput
+  update: Prisma.XOR<Prisma.OrcamentoUpdateWithoutEmpresaInput, Prisma.OrcamentoUncheckedUpdateWithoutEmpresaInput>
+  create: Prisma.XOR<Prisma.OrcamentoCreateWithoutEmpresaInput, Prisma.OrcamentoUncheckedCreateWithoutEmpresaInput>
+}
+
+export type OrcamentoUpdateWithWhereUniqueWithoutEmpresaInput = {
+  where: Prisma.OrcamentoWhereUniqueInput
+  data: Prisma.XOR<Prisma.OrcamentoUpdateWithoutEmpresaInput, Prisma.OrcamentoUncheckedUpdateWithoutEmpresaInput>
+}
+
+export type OrcamentoUpdateManyWithWhereWithoutEmpresaInput = {
+  where: Prisma.OrcamentoScalarWhereInput
+  data: Prisma.XOR<Prisma.OrcamentoUpdateManyMutationInput, Prisma.OrcamentoUncheckedUpdateManyWithoutEmpresaInput>
+}
+
+export type OrcamentoScalarWhereInput = {
+  AND?: Prisma.OrcamentoScalarWhereInput | Prisma.OrcamentoScalarWhereInput[]
+  OR?: Prisma.OrcamentoScalarWhereInput[]
+  NOT?: Prisma.OrcamentoScalarWhereInput | Prisma.OrcamentoScalarWhereInput[]
+  id?: Prisma.StringFilter<"Orcamento"> | string
+  descricao?: Prisma.StringFilter<"Orcamento"> | string
+  preco?: Prisma.FloatFilter<"Orcamento"> | number
+  estado?: Prisma.EnumEstadoOrcamentoFilter<"Orcamento"> | $Enums.EstadoOrcamento
+  createdAt?: Prisma.DateTimeFilter<"Orcamento"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Orcamento"> | Date | string
+  clienteId?: Prisma.StringFilter<"Orcamento"> | string
+  empresaId?: Prisma.StringFilter<"Orcamento"> | string
+}
+
 export type OrcamentoCreateWithoutClienteInput = {
   id?: string
   descricao: string
@@ -466,6 +592,7 @@ export type OrcamentoCreateWithoutClienteInput = {
   estado?: $Enums.EstadoOrcamento
   createdAt?: Date | string
   updatedAt?: Date | string
+  empresa: Prisma.EmpresaCreateNestedOneWithoutOrcamentosInput
 }
 
 export type OrcamentoUncheckedCreateWithoutClienteInput = {
@@ -475,6 +602,7 @@ export type OrcamentoUncheckedCreateWithoutClienteInput = {
   estado?: $Enums.EstadoOrcamento
   createdAt?: Date | string
   updatedAt?: Date | string
+  empresaId: string
 }
 
 export type OrcamentoCreateOrConnectWithoutClienteInput = {
@@ -503,17 +631,44 @@ export type OrcamentoUpdateManyWithWhereWithoutClienteInput = {
   data: Prisma.XOR<Prisma.OrcamentoUpdateManyMutationInput, Prisma.OrcamentoUncheckedUpdateManyWithoutClienteInput>
 }
 
-export type OrcamentoScalarWhereInput = {
-  AND?: Prisma.OrcamentoScalarWhereInput | Prisma.OrcamentoScalarWhereInput[]
-  OR?: Prisma.OrcamentoScalarWhereInput[]
-  NOT?: Prisma.OrcamentoScalarWhereInput | Prisma.OrcamentoScalarWhereInput[]
-  id?: Prisma.StringFilter<"Orcamento"> | string
-  descricao?: Prisma.StringFilter<"Orcamento"> | string
-  preco?: Prisma.FloatFilter<"Orcamento"> | number
-  estado?: Prisma.EnumEstadoOrcamentoFilter<"Orcamento"> | $Enums.EstadoOrcamento
-  createdAt?: Prisma.DateTimeFilter<"Orcamento"> | Date | string
-  updatedAt?: Prisma.DateTimeFilter<"Orcamento"> | Date | string
-  clienteId?: Prisma.StringFilter<"Orcamento"> | string
+export type OrcamentoCreateManyEmpresaInput = {
+  id?: string
+  descricao: string
+  preco: number
+  estado?: $Enums.EstadoOrcamento
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  clienteId: string
+}
+
+export type OrcamentoUpdateWithoutEmpresaInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  descricao?: Prisma.StringFieldUpdateOperationsInput | string
+  preco?: Prisma.FloatFieldUpdateOperationsInput | number
+  estado?: Prisma.EnumEstadoOrcamentoFieldUpdateOperationsInput | $Enums.EstadoOrcamento
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cliente?: Prisma.ClienteUpdateOneRequiredWithoutOrcamentosNestedInput
+}
+
+export type OrcamentoUncheckedUpdateWithoutEmpresaInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  descricao?: Prisma.StringFieldUpdateOperationsInput | string
+  preco?: Prisma.FloatFieldUpdateOperationsInput | number
+  estado?: Prisma.EnumEstadoOrcamentoFieldUpdateOperationsInput | $Enums.EstadoOrcamento
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  clienteId?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
+export type OrcamentoUncheckedUpdateManyWithoutEmpresaInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  descricao?: Prisma.StringFieldUpdateOperationsInput | string
+  preco?: Prisma.FloatFieldUpdateOperationsInput | number
+  estado?: Prisma.EnumEstadoOrcamentoFieldUpdateOperationsInput | $Enums.EstadoOrcamento
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  clienteId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type OrcamentoCreateManyClienteInput = {
@@ -523,6 +678,7 @@ export type OrcamentoCreateManyClienteInput = {
   estado?: $Enums.EstadoOrcamento
   createdAt?: Date | string
   updatedAt?: Date | string
+  empresaId: string
 }
 
 export type OrcamentoUpdateWithoutClienteInput = {
@@ -532,6 +688,7 @@ export type OrcamentoUpdateWithoutClienteInput = {
   estado?: Prisma.EnumEstadoOrcamentoFieldUpdateOperationsInput | $Enums.EstadoOrcamento
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  empresa?: Prisma.EmpresaUpdateOneRequiredWithoutOrcamentosNestedInput
 }
 
 export type OrcamentoUncheckedUpdateWithoutClienteInput = {
@@ -541,6 +698,7 @@ export type OrcamentoUncheckedUpdateWithoutClienteInput = {
   estado?: Prisma.EnumEstadoOrcamentoFieldUpdateOperationsInput | $Enums.EstadoOrcamento
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  empresaId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type OrcamentoUncheckedUpdateManyWithoutClienteInput = {
@@ -550,6 +708,7 @@ export type OrcamentoUncheckedUpdateManyWithoutClienteInput = {
   estado?: Prisma.EnumEstadoOrcamentoFieldUpdateOperationsInput | $Enums.EstadoOrcamento
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  empresaId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 
@@ -562,7 +721,9 @@ export type OrcamentoSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   createdAt?: boolean
   updatedAt?: boolean
   clienteId?: boolean
+  empresaId?: boolean
   cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
+  empresa?: boolean | Prisma.EmpresaDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["orcamento"]>
 
 export type OrcamentoSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -573,7 +734,9 @@ export type OrcamentoSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   createdAt?: boolean
   updatedAt?: boolean
   clienteId?: boolean
+  empresaId?: boolean
   cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
+  empresa?: boolean | Prisma.EmpresaDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["orcamento"]>
 
 export type OrcamentoSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -584,7 +747,9 @@ export type OrcamentoSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   createdAt?: boolean
   updatedAt?: boolean
   clienteId?: boolean
+  empresaId?: boolean
   cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
+  empresa?: boolean | Prisma.EmpresaDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["orcamento"]>
 
 export type OrcamentoSelectScalar = {
@@ -595,23 +760,28 @@ export type OrcamentoSelectScalar = {
   createdAt?: boolean
   updatedAt?: boolean
   clienteId?: boolean
+  empresaId?: boolean
 }
 
-export type OrcamentoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "descricao" | "preco" | "estado" | "createdAt" | "updatedAt" | "clienteId", ExtArgs["result"]["orcamento"]>
+export type OrcamentoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "descricao" | "preco" | "estado" | "createdAt" | "updatedAt" | "clienteId" | "empresaId", ExtArgs["result"]["orcamento"]>
 export type OrcamentoInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
+  empresa?: boolean | Prisma.EmpresaDefaultArgs<ExtArgs>
 }
 export type OrcamentoIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
+  empresa?: boolean | Prisma.EmpresaDefaultArgs<ExtArgs>
 }
 export type OrcamentoIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
+  empresa?: boolean | Prisma.EmpresaDefaultArgs<ExtArgs>
 }
 
 export type $OrcamentoPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Orcamento"
   objects: {
     cliente: Prisma.$ClientePayload<ExtArgs>
+    empresa: Prisma.$EmpresaPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -621,6 +791,7 @@ export type $OrcamentoPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     createdAt: Date
     updatedAt: Date
     clienteId: string
+    empresaId: string
   }, ExtArgs["result"]["orcamento"]>
   composites: {}
 }
@@ -1016,6 +1187,7 @@ readonly fields: OrcamentoFieldRefs;
 export interface Prisma__OrcamentoClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   cliente<T extends Prisma.ClienteDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClienteDefaultArgs<ExtArgs>>): Prisma.Prisma__ClienteClient<runtime.Types.Result.GetResult<Prisma.$ClientePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  empresa<T extends Prisma.EmpresaDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmpresaDefaultArgs<ExtArgs>>): Prisma.Prisma__EmpresaClient<runtime.Types.Result.GetResult<Prisma.$EmpresaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1052,6 +1224,7 @@ export interface OrcamentoFieldRefs {
   readonly createdAt: Prisma.FieldRef<"Orcamento", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Orcamento", 'DateTime'>
   readonly clienteId: Prisma.FieldRef<"Orcamento", 'String'>
+  readonly empresaId: Prisma.FieldRef<"Orcamento", 'String'>
 }
     
 

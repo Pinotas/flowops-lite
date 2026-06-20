@@ -33,6 +33,9 @@ const ESTADO_COR: Record<EstadoOrcamento, string> = {
   REJEITADO: "bg-red-100 text-red-700",
 };
 
+// Estados que contam como "fechados" e ficam escondidos por defeito
+const ESTADOS_CONCLUIDOS: EstadoOrcamento[] = ["ACEITE", "REJEITADO"];
+
 const inputClass =
   "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500";
 
@@ -50,6 +53,7 @@ export default function OrcamentosPage() {
   const [submitting, setSubmitting] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
   const [atualizandoId, setAtualizandoId] = useState<string | null>(null);
+  const [mostrarConcluidos, setMostrarConcluidos] = useState(false);
 
   const [clienteId, setClienteId] = useState("");
   const [descricao, setDescricao] = useState("");
@@ -142,13 +146,24 @@ export default function OrcamentosPage() {
     }
   }
 
+  const orcamentosVisiveis = mostrarConcluidos
+    ? orcamentos
+    : orcamentos.filter((o) => !ESTADOS_CONCLUIDOS.includes(o.estado));
+
+  const totalConcluidos = orcamentos.filter((o) =>
+    ESTADOS_CONCLUIDOS.includes(o.estado)
+  ).length;
+
   return (
     <div className="min-h-screen bg-slate-50">
       <div className="mx-auto max-w-5xl px-6 py-10">
         <header className="mb-8">
           <h1 className="text-2xl font-semibold text-slate-900">Orçamentos</h1>
           <p className="mt-1 text-sm text-slate-500">
-            {orcamentos.length} orçamento{orcamentos.length !== 1 ? "s" : ""} registado{orcamentos.length !== 1 ? "s" : ""}
+            {orcamentosVisiveis.length} orçamento{orcamentosVisiveis.length !== 1 ? "s" : ""}
+            {!mostrarConcluidos && totalConcluidos > 0
+              ? ` · ${totalConcluidos} fechado${totalConcluidos !== 1 ? "s" : ""} oculto${totalConcluidos !== 1 ? "s" : ""}`
+              : ""}
           </p>
         </header>
 
@@ -229,11 +244,28 @@ export default function OrcamentosPage() {
 
           {/* Lista */}
           <div className="rounded-xl border border-slate-200 bg-white shadow-sm">
+            <div className="flex items-center justify-between border-b border-slate-100 px-5 py-3">
+              <label className="flex items-center gap-2 text-sm text-slate-600">
+                <input
+                  type="checkbox"
+                  checked={mostrarConcluidos}
+                  onChange={(e) => setMostrarConcluidos(e.target.checked)}
+                  className="h-4 w-4 rounded border-slate-300 text-slate-900 focus:ring-slate-500"
+                />
+                Mostrar fechados (aceites/rejeitados)
+                {totalConcluidos > 0 && (
+                  <span className="text-slate-400">({totalConcluidos})</span>
+                )}
+              </label>
+            </div>
+
             {loading ? (
               <p className="p-6 text-sm text-slate-500">A carregar...</p>
-            ) : orcamentos.length === 0 ? (
+            ) : orcamentosVisiveis.length === 0 ? (
               <p className="p-6 text-sm text-slate-500">
-                Ainda não há orçamentos. Cria o primeiro à esquerda.
+                {orcamentos.length === 0
+                  ? "Ainda não há orçamentos. Cria o primeiro à esquerda."
+                  : "Sem orçamentos para mostrar. Ativa \"Mostrar fechados\" para veres o histórico."}
               </p>
             ) : (
               <table className="w-full text-left text-sm">
@@ -246,7 +278,7 @@ export default function OrcamentosPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {orcamentos.map((orcamento) => (
+                  {orcamentosVisiveis.map((orcamento) => (
                     <tr
                       key={orcamento.id}
                       className="border-b border-slate-100 last:border-0"

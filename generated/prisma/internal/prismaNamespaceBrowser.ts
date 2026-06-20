@@ -51,6 +51,9 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
+  Empresa: 'Empresa',
+  Utilizador: 'Utilizador',
+  TokenRecuperacao: 'TokenRecuperacao',
   Cliente: 'Cliente',
   Orcamento: 'Orcamento',
   Trabalho: 'Trabalho'
@@ -72,6 +75,42 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
+export const EmpresaScalarFieldEnum = {
+  id: 'id',
+  nome: 'nome',
+  nif: 'nif',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmpresaScalarFieldEnum = (typeof EmpresaScalarFieldEnum)[keyof typeof EmpresaScalarFieldEnum]
+
+
+export const UtilizadorScalarFieldEnum = {
+  id: 'id',
+  nome: 'nome',
+  email: 'email',
+  password: 'password',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  empresaId: 'empresaId'
+} as const
+
+export type UtilizadorScalarFieldEnum = (typeof UtilizadorScalarFieldEnum)[keyof typeof UtilizadorScalarFieldEnum]
+
+
+export const TokenRecuperacaoScalarFieldEnum = {
+  id: 'id',
+  token: 'token',
+  expiraEm: 'expiraEm',
+  usado: 'usado',
+  createdAt: 'createdAt',
+  utilizadorId: 'utilizadorId'
+} as const
+
+export type TokenRecuperacaoScalarFieldEnum = (typeof TokenRecuperacaoScalarFieldEnum)[keyof typeof TokenRecuperacaoScalarFieldEnum]
+
+
 export const ClienteScalarFieldEnum = {
   id: 'id',
   nome: 'nome',
@@ -80,7 +119,8 @@ export const ClienteScalarFieldEnum = {
   morada: 'morada',
   estado: 'estado',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  empresaId: 'empresaId'
 } as const
 
 export type ClienteScalarFieldEnum = (typeof ClienteScalarFieldEnum)[keyof typeof ClienteScalarFieldEnum]
@@ -93,7 +133,8 @@ export const OrcamentoScalarFieldEnum = {
   estado: 'estado',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  clienteId: 'clienteId'
+  clienteId: 'clienteId',
+  empresaId: 'empresaId'
 } as const
 
 export type OrcamentoScalarFieldEnum = (typeof OrcamentoScalarFieldEnum)[keyof typeof OrcamentoScalarFieldEnum]
@@ -106,7 +147,8 @@ export const TrabalhoScalarFieldEnum = {
   estado: 'estado',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  clienteId: 'clienteId'
+  clienteId: 'clienteId',
+  empresaId: 'empresaId'
 } as const
 
 export type TrabalhoScalarFieldEnum = (typeof TrabalhoScalarFieldEnum)[keyof typeof TrabalhoScalarFieldEnum]

@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getEmpresaId } from "@/lib/api-auth";
 
 export async function POST(request: NextRequest) {
+  const empresaId = await getEmpresaId();
+  if (!empresaId) {
+    return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
+  }
+
   try {
     const body = await request.json();
     const { descricao, preco, clienteId, estado } = body;
@@ -13,11 +19,23 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Confirma que o cliente indicado pertence mesmo a esta empresa
+    const cliente = await prisma.cliente.findFirst({
+      where: { id: clienteId, empresaId },
+    });
+    if (!cliente) {
+      return NextResponse.json(
+        { error: "Cliente inválido" },
+        { status: 400 }
+      );
+    }
+
     const orcamento = await prisma.orcamento.create({
       data: {
         descricao,
         preco: parseFloat(preco),
         clienteId,
+        empresaId,
         ...(estado && { estado }),
       },
     });
@@ -33,8 +51,14 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET() {
+  const empresaId = await getEmpresaId();
+  if (!empresaId) {
+    return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
+  }
+
   try {
     const orcamentos = await prisma.orcamento.findMany({
+      where: { empresaId },
       include: { cliente: true },
       orderBy: { createdAt: "desc" },
     });
