@@ -28,8 +28,7 @@ export default function NavBar() {
     return () => document.removeEventListener("mousedown", handleClickFora);
   }, []);
 
-  // Não mostra a navbar nas páginas de login/registo
-  if (pathname === "/login" || pathname === "/registo") {
+  if (pathname === "/login" || pathname === "/registo" || pathname?.startsWith("/recuperar-password") || pathname?.startsWith("/redefinir-password")) {
     return null;
   }
 
@@ -43,61 +42,69 @@ export default function NavBar() {
     : "?";
 
   return (
-    <nav className="border-b border-slate-200 bg-white">
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-3">
-        <div className="flex items-center gap-1">
-          <span className="mr-6 text-sm font-semibold text-slate-900">
-            FlowOps
-          </span>
-          {LINKS.map((link) => {
-            const ativo = pathname === link.href;
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`rounded-lg px-3 py-1.5 text-sm font-medium transition ${
-                  ativo
-                    ? "bg-slate-900 text-white"
-                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-                }`}
-              >
-                {link.label}
-              </Link>
-            );
-          })}
+    <nav className="sticky top-0 z-10 border-b border-[var(--color-border)] bg-[var(--color-surface)]/90 backdrop-blur-sm">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
+        <div className="flex items-center gap-8">
+          <Link href="/dashboard" className="flex items-center gap-2">
+            <span className="flex h-6 w-6 items-center justify-center rounded-md bg-[var(--color-accent)] text-[11px] font-bold text-white">
+              F
+            </span>
+            <span className="text-[15px] font-semibold tracking-tight text-[var(--color-ink)]">
+              FlowOps
+            </span>
+          </Link>
+
+          <div className="flex items-center gap-1">
+            {LINKS.map((link) => {
+              const ativo = pathname === link.href;
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                    ativo
+                      ? "bg-[var(--color-accent-soft)] text-[var(--color-accent)]"
+                      : "text-[var(--color-ink-muted)] hover:bg-[var(--color-bg)] hover:text-[var(--color-ink)]"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
+          </div>
         </div>
 
         {status === "authenticated" && session?.user && (
           <div className="relative" ref={menuRef}>
             <button
               onClick={() => setMenuAberto((v) => !v)}
-              className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-slate-600 transition hover:bg-slate-100"
+              className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-[var(--color-bg)]"
             >
-              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-900 text-xs font-medium text-white">
+              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--color-ink)] text-[11px] font-medium text-white">
                 {iniciais}
               </span>
-              <span className="hidden font-medium text-slate-700 sm:inline">
+              <span className="hidden font-medium text-[var(--color-ink)] sm:inline">
                 {session.user.name}
               </span>
             </button>
 
             {menuAberto && (
-              <div className="absolute right-0 mt-2 w-56 rounded-xl border border-slate-200 bg-white p-1 shadow-lg">
-                <div className="px-3 py-2">
-                  <p className="text-sm font-medium text-slate-900">
+              <div className="absolute right-0 mt-2 w-56 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-1 shadow-lg shadow-black/5">
+                <div className="px-3 py-2.5">
+                  <p className="text-sm font-medium text-[var(--color-ink)]">
                     {session.user.name}
                   </p>
-                  <p className="text-xs text-slate-400">
+                  <p className="text-xs text-[var(--color-ink-faint)]">
                     {session.user.email}
                   </p>
-                  <p className="mt-1 text-xs font-medium text-slate-500">
+                  <p className="mt-1.5 inline-block rounded-md bg-[var(--color-bg)] px-2 py-0.5 text-xs font-medium text-[var(--color-ink-muted)]">
                     {session.user.empresaNome}
                   </p>
                 </div>
-                <div className="my-1 border-t border-slate-100" />
+                <div className="my-1 border-t border-[var(--color-border)]" />
                 <button
                   onClick={() => signOut({ callbackUrl: "/login" })}
-                  className="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-red-600 transition hover:bg-red-50"
+                  className="w-full rounded-md px-3 py-2 text-left text-sm font-medium text-[var(--color-danger)] transition-colors hover:bg-[var(--color-danger-soft)]"
                 >
                   Terminar sessão
                 </button>

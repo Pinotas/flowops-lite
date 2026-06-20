@@ -27,17 +27,16 @@ const ESTADO_LABEL: Record<EstadoOrcamento, string> = {
 };
 
 const ESTADO_COR: Record<EstadoOrcamento, string> = {
-  PENDENTE: "bg-slate-100 text-slate-700",
-  ENVIADO: "bg-amber-100 text-amber-800",
-  ACEITE: "bg-emerald-100 text-emerald-800",
-  REJEITADO: "bg-red-100 text-red-700",
+  PENDENTE: "bg-[var(--color-bg)] text-[var(--color-ink-muted)]",
+  ENVIADO: "bg-[var(--color-warning-soft)] text-[var(--color-warning)]",
+  ACEITE: "bg-[var(--color-success-soft)] text-[var(--color-success)]",
+  REJEITADO: "bg-[var(--color-danger-soft)] text-[var(--color-danger)]",
 };
 
-// Estados que contam como "fechados" e ficam escondidos por defeito
 const ESTADOS_CONCLUIDOS: EstadoOrcamento[] = ["ACEITE", "REJEITADO"];
 
 const inputClass =
-  "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500";
+  "w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-ink)] placeholder:text-[var(--color-ink-faint)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]";
 
 function formatarPreco(preco: number) {
   return new Intl.NumberFormat("pt-PT", {
@@ -155,11 +154,13 @@ export default function OrcamentosPage() {
   ).length;
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <div className="mx-auto max-w-5xl px-6 py-10">
+    <div className="min-h-screen bg-[var(--color-bg)]">
+      <div className="mx-auto max-w-6xl px-6 py-10">
         <header className="mb-8">
-          <h1 className="text-2xl font-semibold text-slate-900">Orçamentos</h1>
-          <p className="mt-1 text-sm text-slate-500">
+          <h1 className="text-2xl font-semibold tracking-tight text-[var(--color-ink)]">
+            Orçamentos
+          </h1>
+          <p className="mt-1 text-sm text-[var(--color-ink-muted)]">
             {orcamentosVisiveis.length} orçamento{orcamentosVisiveis.length !== 1 ? "s" : ""}
             {!mostrarConcluidos && totalConcluidos > 0
               ? ` · ${totalConcluidos} fechado${totalConcluidos !== 1 ? "s" : ""} oculto${totalConcluidos !== 1 ? "s" : ""}`
@@ -168,23 +169,22 @@ export default function OrcamentosPage() {
         </header>
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[360px_1fr]">
-          {/* Formulário */}
-          <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-            <h2 className="mb-4 text-sm font-semibold text-slate-900">
+          <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5">
+            <h2 className="mb-4 text-sm font-semibold text-[var(--color-ink)]">
               Novo orçamento
             </h2>
 
             {clientes.length === 0 && !loading ? (
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-[var(--color-ink-muted)]">
                 Precisas de ter pelo menos um cliente registado antes de criar um orçamento.{" "}
-                <a href="/clientes" className="font-medium text-slate-900 underline">
+                <a href="/clientes" className="font-medium text-[var(--color-accent)] underline">
                   Adicionar cliente
                 </a>
               </p>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-3">
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-600">
+                  <label className="mb-1 block text-xs font-medium text-[var(--color-ink-muted)]">
                     Cliente *
                   </label>
                   <select
@@ -201,7 +201,7 @@ export default function OrcamentosPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-600">
+                  <label className="mb-1 block text-xs font-medium text-[var(--color-ink-muted)]">
                     Descrição *
                   </label>
                   <textarea
@@ -213,7 +213,7 @@ export default function OrcamentosPage() {
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-600">
+                  <label className="mb-1 block text-xs font-medium text-[var(--color-ink-muted)]">
                     Preço (€) *
                   </label>
                   <input
@@ -228,13 +228,13 @@ export default function OrcamentosPage() {
                 </div>
 
                 {erro && (
-                  <p className="text-xs font-medium text-red-600">{erro}</p>
+                  <p className="text-xs font-medium text-[var(--color-danger)]">{erro}</p>
                 )}
 
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700 disabled:opacity-50"
+                  className="w-full rounded-lg bg-[var(--color-accent)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[var(--color-accent-hover)] disabled:opacity-50"
                 >
                   {submitting ? "A guardar..." : "Criar orçamento"}
                 </button>
@@ -242,27 +242,26 @@ export default function OrcamentosPage() {
             )}
           </div>
 
-          {/* Lista */}
-          <div className="rounded-xl border border-slate-200 bg-white shadow-sm">
-            <div className="flex items-center justify-between border-b border-slate-100 px-5 py-3">
-              <label className="flex items-center gap-2 text-sm text-slate-600">
+          <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]">
+            <div className="flex items-center justify-between border-b border-[var(--color-border)] px-5 py-3">
+              <label className="flex items-center gap-2 text-sm text-[var(--color-ink-muted)]">
                 <input
                   type="checkbox"
                   checked={mostrarConcluidos}
                   onChange={(e) => setMostrarConcluidos(e.target.checked)}
-                  className="h-4 w-4 rounded border-slate-300 text-slate-900 focus:ring-slate-500"
+                  className="h-4 w-4 rounded border-[var(--color-border-strong)] text-[var(--color-accent)] focus:ring-[var(--color-accent)]"
                 />
                 Mostrar fechados (aceites/rejeitados)
                 {totalConcluidos > 0 && (
-                  <span className="text-slate-400">({totalConcluidos})</span>
+                  <span className="text-[var(--color-ink-faint)]">({totalConcluidos})</span>
                 )}
               </label>
             </div>
 
             {loading ? (
-              <p className="p-6 text-sm text-slate-500">A carregar...</p>
+              <p className="p-6 text-sm text-[var(--color-ink-muted)]">A carregar...</p>
             ) : orcamentosVisiveis.length === 0 ? (
-              <p className="p-6 text-sm text-slate-500">
+              <p className="p-6 text-sm text-[var(--color-ink-muted)]">
                 {orcamentos.length === 0
                   ? "Ainda não há orçamentos. Cria o primeiro à esquerda."
                   : "Sem orçamentos para mostrar. Ativa \"Mostrar fechados\" para veres o histórico."}
@@ -270,7 +269,7 @@ export default function OrcamentosPage() {
             ) : (
               <table className="w-full text-left text-sm">
                 <thead>
-                  <tr className="border-b border-slate-200 text-xs uppercase tracking-wide text-slate-400">
+                  <tr className="border-b border-[var(--color-border)] text-xs uppercase tracking-wide text-[var(--color-ink-faint)]">
                     <th className="px-5 py-3 font-medium">Cliente</th>
                     <th className="px-5 py-3 font-medium">Descrição</th>
                     <th className="px-5 py-3 font-medium">Preço</th>
@@ -281,15 +280,15 @@ export default function OrcamentosPage() {
                   {orcamentosVisiveis.map((orcamento) => (
                     <tr
                       key={orcamento.id}
-                      className="border-b border-slate-100 last:border-0"
+                      className="border-b border-[var(--color-border)] last:border-0"
                     >
-                      <td className="px-5 py-3 font-medium text-slate-900">
+                      <td className="px-5 py-3 font-medium text-[var(--color-ink)]">
                         {orcamento.cliente?.nome ?? "—"}
                       </td>
-                      <td className="px-5 py-3 text-slate-600">
+                      <td className="px-5 py-3 text-[var(--color-ink-muted)]">
                         {orcamento.descricao}
                       </td>
-                      <td className="px-5 py-3 font-medium text-slate-900">
+                      <td className="tabular px-5 py-3 font-medium text-[var(--color-ink)]">
                         {formatarPreco(orcamento.preco)}
                       </td>
                       <td className="px-5 py-3">
@@ -302,7 +301,7 @@ export default function OrcamentosPage() {
                               e.target.value as EstadoOrcamento
                             )
                           }
-                          className={`cursor-pointer rounded-full border-0 px-2.5 py-1 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-slate-400 ${ESTADO_COR[orcamento.estado]} ${atualizandoId === orcamento.id ? "opacity-50" : ""}`}
+                          className={`cursor-pointer rounded-full border-0 px-2.5 py-1 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)] ${ESTADO_COR[orcamento.estado]} ${atualizandoId === orcamento.id ? "opacity-50" : ""}`}
                         >
                           {Object.entries(ESTADO_LABEL).map(([valor, label]) => (
                             <option key={valor} value={valor}>
