@@ -7,6 +7,7 @@ type EstadoOrcamento = "PENDENTE" | "ENVIADO" | "ACEITE" | "REJEITADO";
 type Cliente = {
   id: string;
   nome: string;
+  email: string | null;
 };
 
 type Orcamento = {
@@ -33,8 +34,6 @@ const ESTADO_COR: Record<EstadoOrcamento, string> = {
   REJEITADO: "bg-[var(--color-danger-soft)] text-[var(--color-danger)]",
 };
 
-const ESTADOS_CONCLUIDOS: EstadoOrcamento[] = ["ACEITE", "REJEITADO"];
-
 const inputClass =
   "w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-ink)] placeholder:text-[var(--color-ink-faint)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]";
 
@@ -51,8 +50,11 @@ export default function OrcamentosPage() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
+  const [aviso, setAviso] = useState<string | null>(null);
   const [atualizandoId, setAtualizandoId] = useState<string | null>(null);
-  const [mostrarConcluidos, setMostrarConcluidos] = useState(false);
+  const [enviandoId, setEnviandoId] = useState<string | null>(null);
+  const [mostrarAceites, setMostrarAceites] = useState(false);
+  const [mostrarRejeitados, setMostrarRejeitados] = useState(false);
 
   const [clienteId, setClienteId] = useState("");
   const [descricao, setDescricao] = useState("");
@@ -145,12 +147,46 @@ export default function OrcamentosPage() {
     }
   }
 
-  const orcamentosVisiveis = mostrarConcluidos
-    ? orcamentos
-    : orcamentos.filter((o) => !ESTADOS_CONCLUIDOS.includes(o.estado));
+  async function handleEnviarEmail(orcamento: Orcamento) {
+    setErro(null);
+    setAviso(null);
 
-  const totalConcluidos = orcamentos.filter((o) =>
-    ESTADOS_CONCLUIDOS.includes(o.estado)
+    if (!orcamento.cliente.email) {
+      setErro(
+        `${orcamento.cliente.nome} não tem email registado. Adiciona um email ao cliente primeiro.`
+      );
+      return;
+    }
+
+    setEnviandoId(orcamento.id);
+    try {
+      const res = await fetch(`/api/budgets/${orcamento.id}/send`, {
+        method: "POST",
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Erro ao enviar o email");
+      }
+
+      setAviso(`Orçamento enviado para ${orcamento.cliente.email}.`);
+      await carregarDados();
+    } catch (err) {
+      setErro(err instanceof Error ? err.message : "Erro ao enviar o email");
+    } finally {
+      setEnviandoId(null);
+    }
+  }
+
+  const orcamentosVisiveis = orcamentos.filter((o) => {
+    if (o.estado === "ACEITE" && !mostrarAceites) return false;
+    if (o.estado === "REJEITADO" && !mostrarRejeitados) return false;
+    return true;
+  });
+
+  const totalAceites = orcamentos.filter((o) => o.estado === "ACEITE").length;
+  const totalRejeitados = orcamentos.filter(
+    (o) => o.estado === "REJEITADO"
   ).length;
 
   return (
@@ -162,11 +198,14 @@ export default function OrcamentosPage() {
           </h1>
           <p className="mt-1 text-sm text-[var(--color-ink-muted)]">
             {orcamentosVisiveis.length} orçamento{orcamentosVisiveis.length !== 1 ? "s" : ""}
-            {!mostrarConcluidos && totalConcluidos > 0
-              ? ` · ${totalConcluidos} fechado${totalConcluidos !== 1 ? "s" : ""} oculto${totalConcluidos !== 1 ? "s" : ""}`
-              : ""}
           </p>
         </header>
+
+        {aviso && (
+          <div className="mb-4 rounded-lg border border-[var(--color-success-soft)] bg-[var(--color-success-soft)] px-4 py-2.5 text-sm font-medium text-[var(--color-success)]">
+            {aviso}
+          </div>
+        )}
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[360px_1fr]">
           <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5">
@@ -243,17 +282,30 @@ export default function OrcamentosPage() {
           </div>
 
           <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]">
-            <div className="flex items-center justify-between border-b border-[var(--color-border)] px-5 py-3">
+            <div className="flex items-center gap-4 border-b border-[var(--color-border)] px-5 py-3">
               <label className="flex items-center gap-2 text-sm text-[var(--color-ink-muted)]">
                 <input
                   type="checkbox"
-                  checked={mostrarConcluidos}
-                  onChange={(e) => setMostrarConcluidos(e.target.checked)}
+                  checked={mostrarAceites}
+                  onChange={(e) => setMostrarAceites(e.target.checked)}
                   className="h-4 w-4 rounded border-[var(--color-border-strong)] text-[var(--color-accent)] focus:ring-[var(--color-accent)]"
                 />
-                Mostrar fechados (aceites/rejeitados)
-                {totalConcluidos > 0 && (
-                  <span className="text-[var(--color-ink-faint)]">({totalConcluidos})</span>
+                Mostrar aceites
+                {totalAceites > 0 && (
+                  <span className="text-[var(--color-ink-faint)]">({totalAceites})</span>
+                )}
+              </label>
+
+              <label className="flex items-center gap-2 text-sm text-[var(--color-ink-muted)]">
+                <input
+                  type="checkbox"
+                  checked={mostrarRejeitados}
+                  onChange={(e) => setMostrarRejeitados(e.target.checked)}
+                  className="h-4 w-4 rounded border-[var(--color-border-strong)] text-[var(--color-accent)] focus:ring-[var(--color-accent)]"
+                />
+                Mostrar rejeitados
+                {totalRejeitados > 0 && (
+                  <span className="text-[var(--color-ink-faint)]">({totalRejeitados})</span>
                 )}
               </label>
             </div>
@@ -264,7 +316,7 @@ export default function OrcamentosPage() {
               <p className="p-6 text-sm text-[var(--color-ink-muted)]">
                 {orcamentos.length === 0
                   ? "Ainda não há orçamentos. Cria o primeiro à esquerda."
-                  : "Sem orçamentos para mostrar. Ativa \"Mostrar fechados\" para veres o histórico."}
+                  : "Sem orçamentos para mostrar com os filtros atuais."}
               </p>
             ) : (
               <table className="w-full text-left text-sm">
@@ -274,6 +326,7 @@ export default function OrcamentosPage() {
                     <th className="px-5 py-3 font-medium">Descrição</th>
                     <th className="px-5 py-3 font-medium">Preço</th>
                     <th className="px-5 py-3 font-medium">Estado</th>
+                    <th className="px-5 py-3 font-medium"></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -309,6 +362,17 @@ export default function OrcamentosPage() {
                             </option>
                           ))}
                         </select>
+                      </td>
+                      <td className="px-5 py-3 text-right">
+                        <button
+                          onClick={() => handleEnviarEmail(orcamento)}
+                          disabled={enviandoId === orcamento.id}
+                          className="rounded-md border border-[var(--color-border)] px-2.5 py-1 text-xs font-medium text-[var(--color-ink-muted)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] disabled:opacity-50"
+                        >
+                          {enviandoId === orcamento.id
+                            ? "A enviar..."
+                            : "Enviar por email"}
+                        </button>
                       </td>
                     </tr>
                   ))}

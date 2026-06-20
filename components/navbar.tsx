@@ -28,9 +28,7 @@ export default function NavBar() {
     return () => document.removeEventListener("mousedown", handleClickFora);
   }, []);
 
-  if (pathname === "/login" || pathname === "/registo" || pathname?.startsWith("/recuperar-password") || pathname?.startsWith("/redefinir-password")) {
-    return null;
-  }
+  const autenticado = status === "authenticated" && !!session?.user;
 
   const iniciais = session?.user?.name
     ? session.user.name
@@ -45,7 +43,7 @@ export default function NavBar() {
     <nav className="sticky top-0 z-10 border-b border-[var(--color-border)] bg-[var(--color-surface)]/90 backdrop-blur-sm">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
         <div className="flex items-center gap-8">
-          <Link href="/dashboard" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
             <span className="flex h-6 w-6 items-center justify-center rounded-md bg-[var(--color-accent)] text-[11px] font-bold text-white">
               F
             </span>
@@ -54,27 +52,29 @@ export default function NavBar() {
             </span>
           </Link>
 
-          <div className="flex items-center gap-1">
-            {LINKS.map((link) => {
-              const ativo = pathname === link.href;
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
-                    ativo
-                      ? "bg-[var(--color-accent-soft)] text-[var(--color-accent)]"
-                      : "text-[var(--color-ink-muted)] hover:bg-[var(--color-bg)] hover:text-[var(--color-ink)]"
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              );
-            })}
-          </div>
+          {autenticado && (
+            <div className="flex items-center gap-1">
+              {LINKS.map((link) => {
+                const ativo = pathname === link.href;
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                      ativo
+                        ? "bg-[var(--color-accent-soft)] text-[var(--color-accent)]"
+                        : "text-[var(--color-ink-muted)] hover:bg-[var(--color-bg)] hover:text-[var(--color-ink)]"
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
+            </div>
+          )}
         </div>
 
-        {status === "authenticated" && session?.user && (
+        {autenticado ? (
           <div className="relative" ref={menuRef}>
             <button
               onClick={() => setMenuAberto((v) => !v)}
@@ -111,6 +111,27 @@ export default function NavBar() {
               </div>
             )}
           </div>
+        ) : (
+          status !== "loading" && (
+            <div className="flex items-center gap-2">
+              {pathname !== "/" && pathname !== "/login" && (
+                <Link
+                  href="/"
+                  className="rounded-md px-3 py-1.5 text-sm font-medium text-[var(--color-ink-muted)] transition-colors hover:bg-[var(--color-bg)] hover:text-[var(--color-ink)]"
+                >
+                  Entrar
+                </Link>
+              )}
+              {pathname !== "/registo" && (
+                <Link
+                  href="/registo"
+                  className="rounded-md bg-[var(--color-accent)] px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-[var(--color-accent-hover)]"
+                >
+                  Criar conta
+                </Link>
+              )}
+            </div>
+          )
         )}
       </div>
     </nav>

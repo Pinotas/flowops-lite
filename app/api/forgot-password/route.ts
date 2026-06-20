@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
     const link = `${baseUrl}/redefinir-password/${token}`;
 
     await resend.emails.send({
-      from: "FlowOps <onboarding@resend.dev>",
+      from: "FlowOps <orcamentos@flowops.website>",
       to: email,
       subject: "Recuperação de password — FlowOps",
       html: `

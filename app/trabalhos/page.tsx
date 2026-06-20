@@ -2,51 +2,51 @@
 
 import { useEffect, useState } from "react";
 
-type EstadoOrcamento = "PENDENTE" | "ENVIADO" | "ACEITE" | "REJEITADO";
+type EstadoTrabalho = "AGENDADO" | "EM_CURSO" | "CONCLUIDO" | "CANCELADO";
 
 type Cliente = {
   id: string;
   nome: string;
 };
 
-type Orcamento = {
+type Trabalho = {
   id: string;
-  descricao: string;
-  preco: number;
-  estado: EstadoOrcamento;
-  createdAt: string;
+  data: string;
+  notas: string | null;
+  estado: EstadoTrabalho;
   clienteId: string;
   cliente: Cliente;
 };
 
-const ESTADO_LABEL: Record<EstadoOrcamento, string> = {
-  PENDENTE: "Pendente",
-  ENVIADO: "Enviado",
-  ACEITE: "Aceite",
-  REJEITADO: "Rejeitado",
+const ESTADO_LABEL: Record<EstadoTrabalho, string> = {
+  AGENDADO: "Agendado",
+  EM_CURSO: "Em curso",
+  CONCLUIDO: "Concluído",
+  CANCELADO: "Cancelado",
 };
 
-const ESTADO_COR: Record<EstadoOrcamento, string> = {
-  PENDENTE: "bg-[var(--color-bg)] text-[var(--color-ink-muted)]",
-  ENVIADO: "bg-[var(--color-warning-soft)] text-[var(--color-warning)]",
-  ACEITE: "bg-[var(--color-success-soft)] text-[var(--color-success)]",
-  REJEITADO: "bg-[var(--color-danger-soft)] text-[var(--color-danger)]",
+const ESTADO_COR: Record<EstadoTrabalho, string> = {
+  AGENDADO: "bg-[var(--color-bg)] text-[var(--color-ink-muted)]",
+  EM_CURSO: "bg-[var(--color-warning-soft)] text-[var(--color-warning)]",
+  CONCLUIDO: "bg-[var(--color-success-soft)] text-[var(--color-success)]",
+  CANCELADO: "bg-[var(--color-danger-soft)] text-[var(--color-danger)]",
 };
 
-const ESTADOS_CONCLUIDOS: EstadoOrcamento[] = ["ACEITE", "REJEITADO"];
+const ESTADOS_CONCLUIDOS: EstadoTrabalho[] = ["CONCLUIDO", "CANCELADO"];
 
 const inputClass =
   "w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-ink)] placeholder:text-[var(--color-ink-faint)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]";
 
-function formatarPreco(preco: number) {
-  return new Intl.NumberFormat("pt-PT", {
-    style: "currency",
-    currency: "EUR",
-  }).format(preco);
+function formatarData(dataISO: string) {
+  return new Date(dataISO).toLocaleDateString("pt-PT", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
 }
 
-export default function OrcamentosPage() {
-  const [orcamentos, setOrcamentos] = useState<Orcamento[]>([]);
+export default function TrabalhosPage() {
+  const [trabalhos, setTrabalhos] = useState<Trabalho[]>([]);
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -55,18 +55,18 @@ export default function OrcamentosPage() {
   const [mostrarConcluidos, setMostrarConcluidos] = useState(false);
 
   const [clienteId, setClienteId] = useState("");
-  const [descricao, setDescricao] = useState("");
-  const [preco, setPreco] = useState("");
+  const [data, setData] = useState("");
+  const [notas, setNotas] = useState("");
 
   async function carregarDados() {
     try {
-      const [resOrcamentos, resClientes] = await Promise.all([
-        fetch("/api/budgets"),
+      const [resTrabalhos, resClientes] = await Promise.all([
+        fetch("/api/jobs"),
         fetch("/api/customers"),
       ]);
-      const dataOrcamentos = await resOrcamentos.json();
+      const dataTrabalhos = await resTrabalhos.json();
       const dataClientes = await resClientes.json();
-      setOrcamentos(dataOrcamentos);
+      setTrabalhos(dataTrabalhos);
       setClientes(dataClientes);
     } catch {
       setErro("Não foi possível carregar os dados.");
@@ -87,51 +87,47 @@ export default function OrcamentosPage() {
       setErro("Escolhe um cliente.");
       return;
     }
-    if (!descricao.trim()) {
-      setErro("A descrição é obrigatória.");
-      return;
-    }
-    if (!preco || parseFloat(preco) <= 0) {
-      setErro("Indica um preço válido.");
+    if (!data) {
+      setErro("Indica a data do trabalho.");
       return;
     }
 
     setSubmitting(true);
     try {
-      const res = await fetch("/api/budgets", {
+      const res = await fetch("/api/jobs", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           clienteId,
-          descricao,
-          preco: parseFloat(preco),
+          data,
+          notas: notas || null,
         }),
       });
 
       if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || "Erro ao criar orçamento");
+        const resData = await res.json();
+        throw new Error(resData.error || "Erro ao criar trabalho");
       }
 
       setClienteId("");
-      setDescricao("");
-      setPreco("");
+      setData("");
+      setNotas("");
       await carregarDados();
     } catch (err) {
-      setErro(err instanceof Error ? err.message : "Erro ao criar orçamento");
+      setErro(err instanceof Error ? err.message : "Erro ao criar trabalho");
     } finally {
       setSubmitting(false);
     }
   }
 
-  async function handleMudarEstado(id: string, novoEstado: EstadoOrcamento) {
+  async function handleMudarEstado(id: string, novoEstado: EstadoTrabalho) {
     setAtualizandoId(id);
-    setOrcamentos((prev) =>
-      prev.map((o) => (o.id === id ? { ...o, estado: novoEstado } : o))
+    setTrabalhos((prev) =>
+      prev.map((t) => (t.id === id ? { ...t, estado: novoEstado } : t))
     );
 
     try {
-      const res = await fetch(`/api/budgets/${id}`, {
+      const res = await fetch(`/api/jobs/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ estado: novoEstado }),
@@ -145,12 +141,12 @@ export default function OrcamentosPage() {
     }
   }
 
-  const orcamentosVisiveis = mostrarConcluidos
-    ? orcamentos
-    : orcamentos.filter((o) => !ESTADOS_CONCLUIDOS.includes(o.estado));
+  const trabalhosVisiveis = mostrarConcluidos
+    ? trabalhos
+    : trabalhos.filter((t) => !ESTADOS_CONCLUIDOS.includes(t.estado));
 
-  const totalConcluidos = orcamentos.filter((o) =>
-    ESTADOS_CONCLUIDOS.includes(o.estado)
+  const totalConcluidos = trabalhos.filter((t) =>
+    ESTADOS_CONCLUIDOS.includes(t.estado)
   ).length;
 
   return (
@@ -158,10 +154,10 @@ export default function OrcamentosPage() {
       <div className="mx-auto max-w-6xl px-6 py-10">
         <header className="mb-8">
           <h1 className="text-2xl font-semibold tracking-tight text-[var(--color-ink)]">
-            Orçamentos
+            Trabalhos
           </h1>
           <p className="mt-1 text-sm text-[var(--color-ink-muted)]">
-            {orcamentosVisiveis.length} orçamento{orcamentosVisiveis.length !== 1 ? "s" : ""}
+            {trabalhosVisiveis.length} trabalho{trabalhosVisiveis.length !== 1 ? "s" : ""}
             {!mostrarConcluidos && totalConcluidos > 0
               ? ` · ${totalConcluidos} fechado${totalConcluidos !== 1 ? "s" : ""} oculto${totalConcluidos !== 1 ? "s" : ""}`
               : ""}
@@ -171,12 +167,12 @@ export default function OrcamentosPage() {
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[360px_1fr]">
           <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5">
             <h2 className="mb-4 text-sm font-semibold text-[var(--color-ink)]">
-              Novo orçamento
+              Novo trabalho
             </h2>
 
             {clientes.length === 0 && !loading ? (
               <p className="text-sm text-[var(--color-ink-muted)]">
-                Precisas de ter pelo menos um cliente registado antes de criar um orçamento.{" "}
+                Precisas de ter pelo menos um cliente registado antes de agendar um trabalho.{" "}
                 <a href="/clientes" className="font-medium text-[var(--color-accent)] underline">
                   Adicionar cliente
                 </a>
@@ -202,28 +198,25 @@ export default function OrcamentosPage() {
                 </div>
                 <div>
                   <label className="mb-1 block text-xs font-medium text-[var(--color-ink-muted)]">
-                    Descrição *
+                    Data *
                   </label>
-                  <textarea
-                    value={descricao}
-                    onChange={(e) => setDescricao(e.target.value)}
+                  <input
+                    type="date"
+                    value={data}
+                    onChange={(e) => setData(e.target.value)}
                     className={inputClass}
-                    rows={3}
-                    placeholder="Ex: Pintura da sala e corredor"
                   />
                 </div>
                 <div>
                   <label className="mb-1 block text-xs font-medium text-[var(--color-ink-muted)]">
-                    Preço (€) *
+                    Notas
                   </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    value={preco}
-                    onChange={(e) => setPreco(e.target.value)}
+                  <textarea
+                    value={notas}
+                    onChange={(e) => setNotas(e.target.value)}
                     className={inputClass}
-                    placeholder="0.00"
+                    rows={3}
+                    placeholder="Ex: Levar escada, confirmar acesso à garagem"
                   />
                 </div>
 
@@ -236,7 +229,7 @@ export default function OrcamentosPage() {
                   disabled={submitting}
                   className="w-full rounded-lg bg-[var(--color-accent)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[var(--color-accent-hover)] disabled:opacity-50"
                 >
-                  {submitting ? "A guardar..." : "Criar orçamento"}
+                  {submitting ? "A guardar..." : "Agendar trabalho"}
                 </button>
               </form>
             )}
@@ -251,7 +244,7 @@ export default function OrcamentosPage() {
                   onChange={(e) => setMostrarConcluidos(e.target.checked)}
                   className="h-4 w-4 rounded border-[var(--color-border-strong)] text-[var(--color-accent)] focus:ring-[var(--color-accent)]"
                 />
-                Mostrar fechados (aceites/rejeitados)
+                Mostrar fechados (concluídos/cancelados)
                 {totalConcluidos > 0 && (
                   <span className="text-[var(--color-ink-faint)]">({totalConcluidos})</span>
                 )}
@@ -260,48 +253,48 @@ export default function OrcamentosPage() {
 
             {loading ? (
               <p className="p-6 text-sm text-[var(--color-ink-muted)]">A carregar...</p>
-            ) : orcamentosVisiveis.length === 0 ? (
+            ) : trabalhosVisiveis.length === 0 ? (
               <p className="p-6 text-sm text-[var(--color-ink-muted)]">
-                {orcamentos.length === 0
-                  ? "Ainda não há orçamentos. Cria o primeiro à esquerda."
-                  : "Sem orçamentos para mostrar. Ativa \"Mostrar fechados\" para veres o histórico."}
+                {trabalhos.length === 0
+                  ? "Ainda não há trabalhos agendados. Cria o primeiro à esquerda."
+                  : "Sem trabalhos para mostrar. Ativa \"Mostrar fechados\" para veres o histórico."}
               </p>
             ) : (
               <table className="w-full text-left text-sm">
                 <thead>
                   <tr className="border-b border-[var(--color-border)] text-xs uppercase tracking-wide text-[var(--color-ink-faint)]">
+                    <th className="px-5 py-3 font-medium">Data</th>
                     <th className="px-5 py-3 font-medium">Cliente</th>
-                    <th className="px-5 py-3 font-medium">Descrição</th>
-                    <th className="px-5 py-3 font-medium">Preço</th>
+                    <th className="px-5 py-3 font-medium">Notas</th>
                     <th className="px-5 py-3 font-medium">Estado</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {orcamentosVisiveis.map((orcamento) => (
+                  {trabalhosVisiveis.map((trabalho) => (
                     <tr
-                      key={orcamento.id}
+                      key={trabalho.id}
                       className="border-b border-[var(--color-border)] last:border-0"
                     >
-                      <td className="px-5 py-3 font-medium text-[var(--color-ink)]">
-                        {orcamento.cliente?.nome ?? "—"}
+                      <td className="tabular px-5 py-3 font-medium text-[var(--color-ink)]">
+                        {formatarData(trabalho.data)}
                       </td>
                       <td className="px-5 py-3 text-[var(--color-ink-muted)]">
-                        {orcamento.descricao}
+                        {trabalho.cliente?.nome ?? "—"}
                       </td>
-                      <td className="tabular px-5 py-3 font-medium text-[var(--color-ink)]">
-                        {formatarPreco(orcamento.preco)}
+                      <td className="px-5 py-3 text-[var(--color-ink-faint)]">
+                        {trabalho.notas || "—"}
                       </td>
                       <td className="px-5 py-3">
                         <select
-                          value={orcamento.estado}
-                          disabled={atualizandoId === orcamento.id}
+                          value={trabalho.estado}
+                          disabled={atualizandoId === trabalho.id}
                           onChange={(e) =>
                             handleMudarEstado(
-                              orcamento.id,
-                              e.target.value as EstadoOrcamento
+                              trabalho.id,
+                              e.target.value as EstadoTrabalho
                             )
                           }
-                          className={`cursor-pointer rounded-full border-0 px-2.5 py-1 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)] ${ESTADO_COR[orcamento.estado]} ${atualizandoId === orcamento.id ? "opacity-50" : ""}`}
+                          className={`cursor-pointer rounded-full border-0 px-2.5 py-1 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)] ${ESTADO_COR[trabalho.estado]} ${atualizandoId === trabalho.id ? "opacity-50" : ""}`}
                         >
                           {Object.entries(ESTADO_LABEL).map(([valor, label]) => (
                             <option key={valor} value={valor}>

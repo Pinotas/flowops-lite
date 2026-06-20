@@ -4,6 +4,7 @@ import { authConfig } from "@/auth.config";
 
 const { auth } = NextAuth(authConfig);
 
+// "/" é agora a página de login. Estas são as restantes rotas públicas.
 const ROTAS_PUBLICAS = [
   "/login",
   "/registo",
@@ -15,18 +16,21 @@ export default auth((req) => {
   const { pathname } = req.nextUrl;
   const autenticado = !!req.auth;
 
-  const rotaPublica = ROTAS_PUBLICAS.some((rota) =>
-    pathname.startsWith(rota)
-  );
+  const rotaPublica =
+    pathname === "/" ||
+    ROTAS_PUBLICAS.some((rota) => pathname.startsWith(rota));
 
-  if (!autenticado && !rotaPublica && pathname !== "/") {
-    const loginUrl = new URL("/login", req.url);
-    return NextResponse.redirect(loginUrl);
-  }
-
+  // Autenticado a tentar aceder a uma página pública (login/registo/landing)
+  // → já não precisa, vai direto para o dashboard
   if (autenticado && rotaPublica) {
     const dashboardUrl = new URL("/dashboard", req.url);
     return NextResponse.redirect(dashboardUrl);
+  }
+
+  // Não autenticado a tentar aceder a rota protegida → manda para a login (/)
+  if (!autenticado && !rotaPublica) {
+    const loginUrl = new URL("/", req.url);
+    return NextResponse.redirect(loginUrl);
   }
 
   return NextResponse.next();
