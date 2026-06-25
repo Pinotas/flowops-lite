@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { renderToBuffer } from "@react-pdf/renderer";
 import { Resend } from "resend";
 import { prisma } from "@/lib/prisma";
 import { getEmpresaId } from "@/lib/api-auth";
-import { OrcamentoPdf } from "@/components/pdf/OrcamentoPdf";
+import { gerarOrcamentoPdf, numeroOrcamento as gerarNumeroOrcamento } from "@/lib/gerar-orcamento-pdf";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -21,7 +20,11 @@ export async function POST(
 
     const orcamento = await prisma.orcamento.findFirst({
       where: { id, empresaId },
-      include: { cliente: true, empresa: true },
+      include: {
+        cliente: true,
+        empresa: true,
+        linhas: { orderBy: { ordem: "asc" } },
+      },
     });
 
     if (!orcamento) {
@@ -38,28 +41,10 @@ export async function POST(
       );
     }
 
-    const numeroOrcamento = orcamento.id.slice(-8).toUpperCase();
-    const dataFormatada = new Date(orcamento.createdAt).toLocaleDateString(
-      "pt-PT",
-      { day: "2-digit", month: "2-digit", year: "numeric" }
-    );
+    const numeroOrcamento = gerarNumeroOrcamento(orcamento);
+    const pdfBuffer = await gerarOrcamentoPdf(orcamento);
 
-    const pdfBuffer = await renderToBuffer(
-      <OrcamentoPdf
-        empresaNome={orcamento.empresa.nome}
-        empresaNif={orcamento.empresa.nif}
-        clienteNome={orcamento.cliente.nome}
-        clienteEmail={orcamento.cliente.email}
-        clienteTelefone={orcamento.cliente.telefone}
-        clienteMorada={orcamento.cliente.morada}
-        descricao={orcamento.descricao}
-        preco={orcamento.preco}
-        numeroOrcamento={numeroOrcamento}
-        data={dataFormatada}
-      />
-    );
-
-    await resend.emails.send({
+    const { data: emailData, error: emailError } = await resend.emails.send({
       from: "FlowOps <orcamentos@flowops.website>",
       to: orcamento.cliente.email,
       subject: `Orçamento de ${orcamento.empresa.nome}`,
@@ -82,6 +67,19 @@ export async function POST(
         },
       ],
     });
+
+    // O SDK do Resend pode devolver sucesso HTTP mas um erro dentro do
+    // payload (ex: destinatário não permitido em modo de teste). Sem
+    // esta verificação, o pedido parece ter sucesso mas o email nunca sai.
+    if (emailError) {
+      console.error("Resend error:", emailError);
+      return NextResponse.json(
+        { error: emailError.message || "O serviço de email rejeitou o envio" },
+        { status: 502 }
+      );
+    }
+
+    console.log("Email enviado com sucesso, id:", emailData?.id);
 
     // Atualiza o estado para "ENVIADO" se ainda estava pendente
     if (orcamento.estado === "PENDENTE") {

@@ -37,7 +37,7 @@ export async function PATCH(
 
     const orcamento = await prisma.orcamento.findUnique({
       where: { id },
-      include: { cliente: true },
+      include: { cliente: true, linhas: { orderBy: { ordem: "asc" } } },
     });
     return NextResponse.json(orcamento);
   } catch (error) {

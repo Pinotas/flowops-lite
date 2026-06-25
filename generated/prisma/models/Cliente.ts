@@ -466,10 +466,6 @@ export type ClienteUncheckedUpdateManyWithoutEmpresaNestedInput = {
   deleteMany?: Prisma.ClienteScalarWhereInput | Prisma.ClienteScalarWhereInput[]
 }
 
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
-}
-
 export type EnumEstadoClienteFieldUpdateOperationsInput = {
   set?: $Enums.EstadoCliente
 }

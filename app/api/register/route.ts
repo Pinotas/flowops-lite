@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { nomeEmpresa, nif, nomeUtilizador, email, password } = body;
+    const { nomeEmpresa, nif, nomeUtilizador, email, password, morada } = body;
 
     if (!nomeEmpresa || !nif || !nomeUtilizador || !email || !password) {
       return NextResponse.json(
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
     // Cria a empresa e o utilizador associado numa única transação
     const resultado = await prisma.$transaction(async (tx) => {
       const empresa = await tx.empresa.create({
-        data: { nome: nomeEmpresa, nif },
+        data: { nome: nomeEmpresa, nif, morada: morada || null },
       });
 
       const utilizador = await tx.utilizador.create({

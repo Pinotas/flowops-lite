@@ -56,6 +56,7 @@ export const ModelName = {
   TokenRecuperacao: 'TokenRecuperacao',
   Cliente: 'Cliente',
   Orcamento: 'Orcamento',
+  LinhaOrcamento: 'LinhaOrcamento',
   Trabalho: 'Trabalho'
 } as const
 
@@ -79,6 +80,8 @@ export const EmpresaScalarFieldEnum = {
   id: 'id',
   nome: 'nome',
   nif: 'nif',
+  morada: 'morada',
+  logoUrl: 'logoUrl',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -128,8 +131,6 @@ export type ClienteScalarFieldEnum = (typeof ClienteScalarFieldEnum)[keyof typeo
 
 export const OrcamentoScalarFieldEnum = {
   id: 'id',
-  descricao: 'descricao',
-  preco: 'preco',
   estado: 'estado',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
@@ -138,6 +139,18 @@ export const OrcamentoScalarFieldEnum = {
 } as const
 
 export type OrcamentoScalarFieldEnum = (typeof OrcamentoScalarFieldEnum)[keyof typeof OrcamentoScalarFieldEnum]
+
+
+export const LinhaOrcamentoScalarFieldEnum = {
+  id: 'id',
+  descricao: 'descricao',
+  quantidade: 'quantidade',
+  precoUnit: 'precoUnit',
+  ordem: 'ordem',
+  orcamentoId: 'orcamentoId'
+} as const
+
+export type LinhaOrcamentoScalarFieldEnum = (typeof LinhaOrcamentoScalarFieldEnum)[keyof typeof LinhaOrcamentoScalarFieldEnum]
 
 
 export const TrabalhoScalarFieldEnum = {

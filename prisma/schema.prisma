@@ -32,6 +32,8 @@ model Empresa {
   id        String   @id @default(cuid())
   nome      String
   nif       String   @unique
+  morada    String?
+  logoUrl   String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -89,8 +91,6 @@ model Cliente {
 
 model Orcamento {
   id        String          @id @default(cuid())
-  descricao String
-  preco     Float
   estado    EstadoOrcamento @default(PENDENTE)
   createdAt DateTime        @default(now())
   updatedAt DateTime        @updatedAt
@@ -101,7 +101,22 @@ model Orcamento {
   empresa   Empresa @relation(fields: [empresaId], references: [id])
   empresaId String
 
+  linhas LinhaOrcamento[]
+
   @@index([empresaId])
+}
+
+model LinhaOrcamento {
+  id          String @id @default(cuid())
+  descricao   String
+  quantidade  Float  @default(1)
+  precoUnit   Float
+  ordem       Int
+
+  orcamento   Orcamento @relation(fields: [orcamentoId], references: [id], onDelete: Cascade)
+  orcamentoId String
+
+  @@index([orcamentoId])
 }
 
 model Trabalho {

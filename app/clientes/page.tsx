@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { encontrarPaisPorCodigo } from "@/lib/paises";
+import { SeletorPais } from "@/components/SeletorPais";
 
 type EstadoCliente = "NOVO" | "ORCAMENTO" | "CONFIRMADO" | "CONCLUIDO";
 
@@ -37,12 +39,25 @@ export default function ClientesPage() {
   const [submitting, setSubmitting] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
   const [atualizandoId, setAtualizandoId] = useState<string | null>(null);
-  const [mostrarConcluidos, setMostrarConcluidos] = useState(false);
 
   const [nome, setNome] = useState("");
-  const [telefone, setTelefone] = useState("");
+  const [codigoPais, setCodigoPais] = useState("PT");
+  const [telefoneNumero, setTelefoneNumero] = useState("");
   const [email, setEmail] = useState("");
   const [morada, setMorada] = useState("");
+
+  const paisSelecionado = encontrarPaisPorCodigo(codigoPais);
+
+  function handleCodigoPaisChange(novoCodigo: string) {
+    setCodigoPais(novoCodigo);
+    const novoPais = encontrarPaisPorCodigo(novoCodigo);
+    setTelefoneNumero((prev) => prev.slice(0, novoPais.digitos));
+  }
+
+  function handleTelefoneChange(valor: string) {
+    const apenasDigitos = valor.replace(/\D/g, "").slice(0, paisSelecionado.digitos);
+    setTelefoneNumero(apenasDigitos);
+  }
 
   async function carregarClientes() {
     try {
@@ -69,6 +84,13 @@ export default function ClientesPage() {
       return;
     }
 
+    if (telefoneNumero && telefoneNumero.length !== paisSelecionado.digitos) {
+      setErro(
+        `O número de telefone para ${paisSelecionado.nome} deve ter ${paisSelecionado.digitos} dígitos.`
+      );
+      return;
+    }
+
     setSubmitting(true);
     try {
       const res = await fetch("/api/customers", {
@@ -76,7 +98,7 @@ export default function ClientesPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           nome,
-          telefone: telefone || null,
+          telefone: telefoneNumero ? `${paisSelecionado.indicativo} ${telefoneNumero}` : null,
           email: email || null,
           morada: morada || null,
         }),
@@ -88,7 +110,8 @@ export default function ClientesPage() {
       }
 
       setNome("");
-      setTelefone("");
+      setCodigoPais("PT");
+      setTelefoneNumero("");
       setEmail("");
       setMorada("");
       await carregarClientes();
@@ -120,14 +143,6 @@ export default function ClientesPage() {
     }
   }
 
-  const clientesVisiveis = mostrarConcluidos
-    ? clientes
-    : clientes.filter((c) => c.estado !== "CONCLUIDO");
-
-  const totalConcluidos = clientes.filter(
-    (c) => c.estado === "CONCLUIDO"
-  ).length;
-
   return (
     <div className="min-h-screen bg-[var(--color-bg)]">
       <div className="mx-auto max-w-6xl px-6 py-10">
@@ -136,10 +151,7 @@ export default function ClientesPage() {
             Clientes
           </h1>
           <p className="mt-1 text-sm text-[var(--color-ink-muted)]">
-            {clientesVisiveis.length} cliente{clientesVisiveis.length !== 1 ? "s" : ""}
-            {!mostrarConcluidos && totalConcluidos > 0
-              ? ` · ${totalConcluidos} concluído${totalConcluidos !== 1 ? "s" : ""} oculto${totalConcluidos !== 1 ? "s" : ""}`
-              : ""}
+            {clientes.length} cliente{clientes.length !== 1 ? "s" : ""}
           </p>
         </header>
 
@@ -165,13 +177,17 @@ export default function ClientesPage() {
                 <label className="mb-1 block text-xs font-medium text-[var(--color-ink-muted)]">
                   Telefone
                 </label>
-                <input
-                  type="text"
-                  value={telefone}
-                  onChange={(e) => setTelefone(e.target.value)}
-                  className={inputClass}
-                  placeholder="912 345 678"
-                />
+                <div className="flex gap-2">
+                  <SeletorPais codigoPais={codigoPais} onChange={handleCodigoPaisChange} />
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    value={telefoneNumero}
+                    onChange={(e) => handleTelefoneChange(e.target.value)}
+                    className={`${inputClass} !w-auto min-w-0 flex-1`}
+                    placeholder={`${paisSelecionado.digitos} dígitos`}
+                  />
+                </div>
               </div>
               <div>
                 <label className="mb-1 block text-xs font-medium text-[var(--color-ink-muted)]">
@@ -213,28 +229,11 @@ export default function ClientesPage() {
           </div>
 
           <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]">
-            <div className="flex items-center justify-between border-b border-[var(--color-border)] px-5 py-3">
-              <label className="flex items-center gap-2 text-sm text-[var(--color-ink-muted)]">
-                <input
-                  type="checkbox"
-                  checked={mostrarConcluidos}
-                  onChange={(e) => setMostrarConcluidos(e.target.checked)}
-                  className="h-4 w-4 rounded border-[var(--color-border-strong)] text-[var(--color-accent)] focus:ring-[var(--color-accent)]"
-                />
-                Mostrar concluídos
-                {totalConcluidos > 0 && (
-                  <span className="text-[var(--color-ink-faint)]">({totalConcluidos})</span>
-                )}
-              </label>
-            </div>
-
             {loading ? (
               <p className="p-6 text-sm text-[var(--color-ink-muted)]">A carregar...</p>
-            ) : clientesVisiveis.length === 0 ? (
+            ) : clientes.length === 0 ? (
               <p className="p-6 text-sm text-[var(--color-ink-muted)]">
-                {clientes.length === 0
-                  ? "Ainda não há clientes. Adiciona o primeiro à esquerda."
-                  : "Sem clientes para mostrar. Ativa \"Mostrar concluídos\" para veres o histórico."}
+                Ainda não há clientes. Adiciona o primeiro à esquerda.
               </p>
             ) : (
               <table className="w-full text-left text-sm">
@@ -246,7 +245,7 @@ export default function ClientesPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {clientesVisiveis.map((cliente) => (
+                  {clientes.map((cliente) => (
                     <tr
                       key={cliente.id}
                       className="border-b border-[var(--color-border)] last:border-0"

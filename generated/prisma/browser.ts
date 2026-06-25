@@ -43,6 +43,11 @@ export type Cliente = Prisma.ClienteModel
  */
 export type Orcamento = Prisma.OrcamentoModel
 /**
+ * Model LinhaOrcamento
+ * 
+ */
+export type LinhaOrcamento = Prisma.LinhaOrcamentoModel
+/**
  * Model Trabalho
  * 
  */

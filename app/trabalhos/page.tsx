@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 type EstadoTrabalho = "AGENDADO" | "EM_CURSO" | "CONCLUIDO" | "CANCELADO";
+type SubFiltro = "TODOS" | "CONCLUIDO" | "CANCELADO";
 
 type Cliente = {
   id: string;
@@ -32,7 +33,14 @@ const ESTADO_COR: Record<EstadoTrabalho, string> = {
   CANCELADO: "bg-[var(--color-danger-soft)] text-[var(--color-danger)]",
 };
 
-const ESTADOS_CONCLUIDOS: EstadoTrabalho[] = ["CONCLUIDO", "CANCELADO"];
+const LINHA_BG: Record<EstadoTrabalho, string | undefined> = {
+  AGENDADO: undefined,
+  EM_CURSO: undefined,
+  CONCLUIDO: "var(--color-success-strong)",
+  CANCELADO: "var(--color-danger-strong)",
+};
+
+const ESTADOS_TERMINADOS: EstadoTrabalho[] = ["CONCLUIDO", "CANCELADO"];
 
 const inputClass =
   "w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-ink)] placeholder:text-[var(--color-ink-faint)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]";
@@ -52,7 +60,8 @@ export default function TrabalhosPage() {
   const [submitting, setSubmitting] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
   const [atualizandoId, setAtualizandoId] = useState<string | null>(null);
-  const [mostrarConcluidos, setMostrarConcluidos] = useState(false);
+  const [verTerminados, setVerTerminados] = useState(false);
+  const [subFiltro, setSubFiltro] = useState<SubFiltro>("TODOS");
 
   const [clienteId, setClienteId] = useState("");
   const [data, setData] = useState("");
@@ -141,13 +150,28 @@ export default function TrabalhosPage() {
     }
   }
 
-  const trabalhosVisiveis = mostrarConcluidos
-    ? trabalhos
-    : trabalhos.filter((t) => !ESTADOS_CONCLUIDOS.includes(t.estado));
+  function handleToggleTerminados() {
+    setVerTerminados((v) => !v);
+    setSubFiltro("TODOS");
+  }
 
-  const totalConcluidos = trabalhos.filter((t) =>
-    ESTADOS_CONCLUIDOS.includes(t.estado)
+  const trabalhosVisiveis = trabalhos.filter((t) => {
+    const terminado = ESTADOS_TERMINADOS.includes(t.estado);
+    if (verTerminados) {
+      if (!terminado) return false;
+      if (subFiltro !== "TODOS" && t.estado !== subFiltro) return false;
+      return true;
+    }
+    return !terminado;
+  });
+
+  const totalConcluidos = trabalhos.filter(
+    (t) => t.estado === "CONCLUIDO"
   ).length;
+  const totalCancelados = trabalhos.filter(
+    (t) => t.estado === "CANCELADO"
+  ).length;
+  const totalTerminados = totalConcluidos + totalCancelados;
 
   return (
     <div className="min-h-screen bg-[var(--color-bg)]">
@@ -158,9 +182,6 @@ export default function TrabalhosPage() {
           </h1>
           <p className="mt-1 text-sm text-[var(--color-ink-muted)]">
             {trabalhosVisiveis.length} trabalho{trabalhosVisiveis.length !== 1 ? "s" : ""}
-            {!mostrarConcluidos && totalConcluidos > 0
-              ? ` · ${totalConcluidos} fechado${totalConcluidos !== 1 ? "s" : ""} oculto${totalConcluidos !== 1 ? "s" : ""}`
-              : ""}
           </p>
         </header>
 
@@ -236,19 +257,46 @@ export default function TrabalhosPage() {
           </div>
 
           <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]">
-            <div className="flex items-center justify-between border-b border-[var(--color-border)] px-5 py-3">
-              <label className="flex items-center gap-2 text-sm text-[var(--color-ink-muted)]">
-                <input
-                  type="checkbox"
-                  checked={mostrarConcluidos}
-                  onChange={(e) => setMostrarConcluidos(e.target.checked)}
-                  className="h-4 w-4 rounded border-[var(--color-border-strong)] text-[var(--color-accent)] focus:ring-[var(--color-accent)]"
-                />
-                Mostrar fechados (concluídos/cancelados)
-                {totalConcluidos > 0 && (
-                  <span className="text-[var(--color-ink-faint)]">({totalConcluidos})</span>
-                )}
-              </label>
+            <div className="flex flex-wrap items-center gap-3 border-b border-[var(--color-border)] px-5 py-3">
+              <button
+                onClick={handleToggleTerminados}
+                className={`rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
+                  verTerminados
+                    ? "bg-[var(--color-accent)] text-white"
+                    : "bg-[var(--color-bg)] text-[var(--color-ink-muted)] hover:text-[var(--color-ink)]"
+                }`}
+              >
+                Trabalhos terminados
+                {totalTerminados > 0 && ` (${totalTerminados})`}
+              </button>
+
+              {verTerminados && (
+                <div className="flex items-center gap-1">
+                  {(
+                    [
+                      { valor: "TODOS", label: "Todos" },
+                      { valor: "CONCLUIDO", label: "Concluídos" },
+                      { valor: "CANCELADO", label: "Cancelados" },
+                    ] as { valor: SubFiltro; label: string }[]
+                  ).map((opcao) => (
+                    <button
+                      key={opcao.valor}
+                      onClick={() => setSubFiltro(opcao.valor)}
+                      className={`rounded-full px-2.5 py-1 text-xs font-medium transition-colors ${
+                        subFiltro === opcao.valor
+                          ? opcao.valor === "CONCLUIDO"
+                            ? "bg-[var(--color-success-soft)] text-[var(--color-success)]"
+                            : opcao.valor === "CANCELADO"
+                            ? "bg-[var(--color-danger-soft)] text-[var(--color-danger)]"
+                            : "bg-[var(--color-ink)] text-white"
+                          : "text-[var(--color-ink-faint)] hover:text-[var(--color-ink-muted)]"
+                      }`}
+                    >
+                      {opcao.label}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             {loading ? (
@@ -257,8 +305,49 @@ export default function TrabalhosPage() {
               <p className="p-6 text-sm text-[var(--color-ink-muted)]">
                 {trabalhos.length === 0
                   ? "Ainda não há trabalhos agendados. Cria o primeiro à esquerda."
-                  : "Sem trabalhos para mostrar. Ativa \"Mostrar fechados\" para veres o histórico."}
+                  : verTerminados
+                  ? "Sem trabalhos terminados com este filtro."
+                  : "Sem trabalhos para mostrar."}
               </p>
+            ) : verTerminados ? (
+              <div className="space-y-2 p-4">
+                {trabalhosVisiveis.map((trabalho) => (
+                  <div
+                    key={trabalho.id}
+                    style={{ backgroundColor: LINHA_BG[trabalho.estado] }}
+                    className="flex flex-wrap items-center justify-between gap-3 rounded-full px-5 py-3"
+                  >
+                    <div className="flex flex-1 items-center gap-4 min-w-0">
+                      <span className="tabular font-medium text-[var(--color-ink)] whitespace-nowrap">
+                        {formatarData(trabalho.data)}
+                      </span>
+                      <span className="text-sm text-[var(--color-ink-muted)] whitespace-nowrap">
+                        {trabalho.cliente?.nome ?? "—"}
+                      </span>
+                      <span className="text-sm text-[var(--color-ink-faint)] truncate">
+                        {trabalho.notas || ""}
+                      </span>
+                    </div>
+                    <select
+                      value={trabalho.estado}
+                      disabled={atualizandoId === trabalho.id}
+                      onChange={(e) =>
+                        handleMudarEstado(
+                          trabalho.id,
+                          e.target.value as EstadoTrabalho
+                        )
+                      }
+                      className={`cursor-pointer rounded-full border-0 bg-white/60 px-2.5 py-1 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)] ${atualizandoId === trabalho.id ? "opacity-50" : ""}`}
+                    >
+                      {Object.entries(ESTADO_LABEL).map(([valor, label]) => (
+                        <option key={valor} value={valor}>
+                          {label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                ))}
+              </div>
             ) : (
               <table className="w-full text-left text-sm">
                 <thead>

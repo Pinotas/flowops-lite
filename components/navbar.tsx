@@ -10,6 +10,7 @@ const LINKS = [
   { href: "/clientes", label: "Clientes" },
   { href: "/orcamentos", label: "Orçamentos" },
   { href: "/trabalhos", label: "Trabalhos" },
+  { href: "/perfil", label: "Perfil" },
 ];
 
 export default function NavBar() {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
@@ -12,11 +12,29 @@ export default function RegistoPage() {
   const router = useRouter();
   const [nomeEmpresa, setNomeEmpresa] = useState("");
   const [nif, setNif] = useState("");
+  const [morada, setMorada] = useState("");
   const [nomeUtilizador, setNomeUtilizador] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [logo, setLogo] = useState<File | null>(null);
+  const [logoPreviewUrl, setLogoPreviewUrl] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 2 * 1024 * 1024) {
+      setErro("A imagem não pode exceder 2MB.");
+      return;
+    }
+
+    setErro(null);
+    setLogo(file);
+    setLogoPreviewUrl(URL.createObjectURL(file));
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -38,6 +56,7 @@ export default function RegistoPage() {
           nomeUtilizador,
           email,
           password,
+          morada: morada || null,
         }),
       });
 
@@ -58,6 +77,13 @@ export default function RegistoPage() {
         // Conta criada mas login falhou, manda para o login manual
         router.push("/login");
         return;
+      }
+
+      // Com sessão já criada, envia o logotipo se foi escolhido um
+      if (logo) {
+        const formData = new FormData();
+        formData.append("logo", logo);
+        await fetch("/api/upload-logo", { method: "POST", body: formData });
       }
 
       router.push("/dashboard");
@@ -83,6 +109,39 @@ export default function RegistoPage() {
         </p>
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-3">
+          <div className="flex items-center gap-4">
+            <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-300 bg-slate-50">
+              {logoPreviewUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={logoPreviewUrl}
+                  alt="Pré-visualização do logotipo"
+                  className="h-full w-full object-contain"
+                />
+              ) : (
+                <span className="text-xs text-slate-400">Logo</span>
+              )}
+            </div>
+            <div>
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-50"
+              >
+                {logo ? "Trocar logotipo" : "Adicionar logotipo (opcional)"}
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/png, image/jpeg, image/webp"
+                onChange={handleFileChange}
+                className="hidden"
+              />
+              <p className="mt-1 text-xs text-slate-400">
+                PNG, JPEG ou WEBP. Máximo 2MB.
+              </p>
+            </div>
+          </div>
           <div>
             <label className="mb-1 block text-xs font-medium text-slate-600">
               Nome da empresa
@@ -107,6 +166,18 @@ export default function RegistoPage() {
               className={inputClass}
               placeholder="123456789"
               required
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-xs font-medium text-slate-600">
+              Morada (opcional)
+            </label>
+            <input
+              type="text"
+              value={morada}
+              onChange={(e) => setMorada(e.target.value)}
+              className={inputClass}
+              placeholder="Rua, número, código postal, cidade"
             />
           </div>
           <div>

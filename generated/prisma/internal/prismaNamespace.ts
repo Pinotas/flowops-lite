@@ -389,6 +389,7 @@ export const ModelName = {
   TokenRecuperacao: 'TokenRecuperacao',
   Cliente: 'Cliente',
   Orcamento: 'Orcamento',
+  LinhaOrcamento: 'LinhaOrcamento',
   Trabalho: 'Trabalho'
 } as const
 
@@ -405,7 +406,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "empresa" | "utilizador" | "tokenRecuperacao" | "cliente" | "orcamento" | "trabalho"
+    modelProps: "empresa" | "utilizador" | "tokenRecuperacao" | "cliente" | "orcamento" | "linhaOrcamento" | "trabalho"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -779,6 +780,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    LinhaOrcamento: {
+      payload: Prisma.$LinhaOrcamentoPayload<ExtArgs>
+      fields: Prisma.LinhaOrcamentoFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LinhaOrcamentoFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LinhaOrcamentoPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LinhaOrcamentoFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LinhaOrcamentoPayload>
+        }
+        findFirst: {
+          args: Prisma.LinhaOrcamentoFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LinhaOrcamentoPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LinhaOrcamentoFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LinhaOrcamentoPayload>
+        }
+        findMany: {
+          args: Prisma.LinhaOrcamentoFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LinhaOrcamentoPayload>[]
+        }
+        create: {
+          args: Prisma.LinhaOrcamentoCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LinhaOrcamentoPayload>
+        }
+        createMany: {
+          args: Prisma.LinhaOrcamentoCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.LinhaOrcamentoCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LinhaOrcamentoPayload>[]
+        }
+        delete: {
+          args: Prisma.LinhaOrcamentoDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LinhaOrcamentoPayload>
+        }
+        update: {
+          args: Prisma.LinhaOrcamentoUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LinhaOrcamentoPayload>
+        }
+        deleteMany: {
+          args: Prisma.LinhaOrcamentoDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LinhaOrcamentoUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.LinhaOrcamentoUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LinhaOrcamentoPayload>[]
+        }
+        upsert: {
+          args: Prisma.LinhaOrcamentoUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LinhaOrcamentoPayload>
+        }
+        aggregate: {
+          args: Prisma.LinhaOrcamentoAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLinhaOrcamento>
+        }
+        groupBy: {
+          args: Prisma.LinhaOrcamentoGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LinhaOrcamentoGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LinhaOrcamentoCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LinhaOrcamentoCountAggregateOutputType> | number
+        }
+      }
+    }
     Trabalho: {
       payload: Prisma.$TrabalhoPayload<ExtArgs>
       fields: Prisma.TrabalhoFieldRefs
@@ -896,6 +971,8 @@ export const EmpresaScalarFieldEnum = {
   id: 'id',
   nome: 'nome',
   nif: 'nif',
+  morada: 'morada',
+  logoUrl: 'logoUrl',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -945,8 +1022,6 @@ export type ClienteScalarFieldEnum = (typeof ClienteScalarFieldEnum)[keyof typeo
 
 export const OrcamentoScalarFieldEnum = {
   id: 'id',
-  descricao: 'descricao',
-  preco: 'preco',
   estado: 'estado',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
@@ -955,6 +1030,18 @@ export const OrcamentoScalarFieldEnum = {
 } as const
 
 export type OrcamentoScalarFieldEnum = (typeof OrcamentoScalarFieldEnum)[keyof typeof OrcamentoScalarFieldEnum]
+
+
+export const LinhaOrcamentoScalarFieldEnum = {
+  id: 'id',
+  descricao: 'descricao',
+  quantidade: 'quantidade',
+  precoUnit: 'precoUnit',
+  ordem: 'ordem',
+  orcamentoId: 'orcamentoId'
+} as const
+
+export type LinhaOrcamentoScalarFieldEnum = (typeof LinhaOrcamentoScalarFieldEnum)[keyof typeof LinhaOrcamentoScalarFieldEnum]
 
 
 export const TrabalhoScalarFieldEnum = {
@@ -1051,20 +1138,6 @@ export type ListEnumEstadoClienteFieldRefInput<$PrismaModel> = FieldRefInputType
 
 
 /**
- * Reference to a field of type 'Float'
- */
-export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
-    
-
-
-/**
- * Reference to a field of type 'Float[]'
- */
-export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
-    
-
-
-/**
  * Reference to a field of type 'EstadoOrcamento'
  */
 export type EnumEstadoOrcamentoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EstadoOrcamento'>
@@ -1079,16 +1152,16 @@ export type ListEnumEstadoOrcamentoFieldRefInput<$PrismaModel> = FieldRefInputTy
 
 
 /**
- * Reference to a field of type 'EstadoTrabalho'
+ * Reference to a field of type 'Float'
  */
-export type EnumEstadoTrabalhoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EstadoTrabalho'>
+export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
     
 
 
 /**
- * Reference to a field of type 'EstadoTrabalho[]'
+ * Reference to a field of type 'Float[]'
  */
-export type ListEnumEstadoTrabalhoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EstadoTrabalho[]'>
+export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
 
 
@@ -1103,6 +1176,20 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
  * Reference to a field of type 'Int[]'
  */
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
+ * Reference to a field of type 'EstadoTrabalho'
+ */
+export type EnumEstadoTrabalhoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EstadoTrabalho'>
+    
+
+
+/**
+ * Reference to a field of type 'EstadoTrabalho[]'
+ */
+export type ListEnumEstadoTrabalhoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EstadoTrabalho[]'>
     
 
 /**
@@ -1220,6 +1307,7 @@ export type GlobalOmitConfig = {
   tokenRecuperacao?: Prisma.TokenRecuperacaoOmit
   cliente?: Prisma.ClienteOmit
   orcamento?: Prisma.OrcamentoOmit
+  linhaOrcamento?: Prisma.LinhaOrcamentoOmit
   trabalho?: Prisma.TrabalhoOmit
 }
 
