@@ -19,6 +19,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const inicioHoje = new Date();
+    inicioHoje.setHours(0, 0, 0, 0);
+    if (new Date(data) < inicioHoje) {
+      return NextResponse.json(
+        { error: "A data do trabalho não pode ser no passado" },
+        { status: 400 }
+      );
+    }
+
     const cliente = await prisma.cliente.findFirst({
       where: { id: clienteId, empresaId },
     });

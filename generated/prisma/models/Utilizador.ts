@@ -20,8 +20,18 @@ export type UtilizadorModel = runtime.Types.Result.DefaultSelection<Prisma.$Util
 
 export type AggregateUtilizador = {
   _count: UtilizadorCountAggregateOutputType | null
+  _avg: UtilizadorAvgAggregateOutputType | null
+  _sum: UtilizadorSumAggregateOutputType | null
   _min: UtilizadorMinAggregateOutputType | null
   _max: UtilizadorMaxAggregateOutputType | null
+}
+
+export type UtilizadorAvgAggregateOutputType = {
+  tentativasFalhadas: number | null
+}
+
+export type UtilizadorSumAggregateOutputType = {
+  tentativasFalhadas: number | null
 }
 
 export type UtilizadorMinAggregateOutputType = {
@@ -29,6 +39,8 @@ export type UtilizadorMinAggregateOutputType = {
   nome: string | null
   email: string | null
   password: string | null
+  tentativasFalhadas: number | null
+  bloqueadoAte: Date | null
   createdAt: Date | null
   updatedAt: Date | null
   empresaId: string | null
@@ -39,6 +51,8 @@ export type UtilizadorMaxAggregateOutputType = {
   nome: string | null
   email: string | null
   password: string | null
+  tentativasFalhadas: number | null
+  bloqueadoAte: Date | null
   createdAt: Date | null
   updatedAt: Date | null
   empresaId: string | null
@@ -49,6 +63,8 @@ export type UtilizadorCountAggregateOutputType = {
   nome: number
   email: number
   password: number
+  tentativasFalhadas: number
+  bloqueadoAte: number
   createdAt: number
   updatedAt: number
   empresaId: number
@@ -56,11 +72,21 @@ export type UtilizadorCountAggregateOutputType = {
 }
 
 
+export type UtilizadorAvgAggregateInputType = {
+  tentativasFalhadas?: true
+}
+
+export type UtilizadorSumAggregateInputType = {
+  tentativasFalhadas?: true
+}
+
 export type UtilizadorMinAggregateInputType = {
   id?: true
   nome?: true
   email?: true
   password?: true
+  tentativasFalhadas?: true
+  bloqueadoAte?: true
   createdAt?: true
   updatedAt?: true
   empresaId?: true
@@ -71,6 +97,8 @@ export type UtilizadorMaxAggregateInputType = {
   nome?: true
   email?: true
   password?: true
+  tentativasFalhadas?: true
+  bloqueadoAte?: true
   createdAt?: true
   updatedAt?: true
   empresaId?: true
@@ -81,6 +109,8 @@ export type UtilizadorCountAggregateInputType = {
   nome?: true
   email?: true
   password?: true
+  tentativasFalhadas?: true
+  bloqueadoAte?: true
   createdAt?: true
   updatedAt?: true
   empresaId?: true
@@ -125,6 +155,18 @@ export type UtilizadorAggregateArgs<ExtArgs extends runtime.Types.Extensions.Int
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: UtilizadorAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: UtilizadorSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: UtilizadorMinAggregateInputType
@@ -155,6 +197,8 @@ export type UtilizadorGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   _count?: UtilizadorCountAggregateInputType | true
+  _avg?: UtilizadorAvgAggregateInputType
+  _sum?: UtilizadorSumAggregateInputType
   _min?: UtilizadorMinAggregateInputType
   _max?: UtilizadorMaxAggregateInputType
 }
@@ -164,10 +208,14 @@ export type UtilizadorGroupByOutputType = {
   nome: string
   email: string
   password: string
+  tentativasFalhadas: number
+  bloqueadoAte: Date | null
   createdAt: Date
   updatedAt: Date
   empresaId: string
   _count: UtilizadorCountAggregateOutputType | null
+  _avg: UtilizadorAvgAggregateOutputType | null
+  _sum: UtilizadorSumAggregateOutputType | null
   _min: UtilizadorMinAggregateOutputType | null
   _max: UtilizadorMaxAggregateOutputType | null
 }
@@ -195,6 +243,8 @@ export type UtilizadorWhereInput = {
   nome?: Prisma.StringFilter<"Utilizador"> | string
   email?: Prisma.StringFilter<"Utilizador"> | string
   password?: Prisma.StringFilter<"Utilizador"> | string
+  tentativasFalhadas?: Prisma.IntFilter<"Utilizador"> | number
+  bloqueadoAte?: Prisma.DateTimeNullableFilter<"Utilizador"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Utilizador"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Utilizador"> | Date | string
   empresaId?: Prisma.StringFilter<"Utilizador"> | string
@@ -207,6 +257,8 @@ export type UtilizadorOrderByWithRelationInput = {
   nome?: Prisma.SortOrder
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
+  tentativasFalhadas?: Prisma.SortOrder
+  bloqueadoAte?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   empresaId?: Prisma.SortOrder
@@ -222,6 +274,8 @@ export type UtilizadorWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.UtilizadorWhereInput | Prisma.UtilizadorWhereInput[]
   nome?: Prisma.StringFilter<"Utilizador"> | string
   password?: Prisma.StringFilter<"Utilizador"> | string
+  tentativasFalhadas?: Prisma.IntFilter<"Utilizador"> | number
+  bloqueadoAte?: Prisma.DateTimeNullableFilter<"Utilizador"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Utilizador"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Utilizador"> | Date | string
   empresaId?: Prisma.StringFilter<"Utilizador"> | string
@@ -234,12 +288,16 @@ export type UtilizadorOrderByWithAggregationInput = {
   nome?: Prisma.SortOrder
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
+  tentativasFalhadas?: Prisma.SortOrder
+  bloqueadoAte?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   empresaId?: Prisma.SortOrder
   _count?: Prisma.UtilizadorCountOrderByAggregateInput
+  _avg?: Prisma.UtilizadorAvgOrderByAggregateInput
   _max?: Prisma.UtilizadorMaxOrderByAggregateInput
   _min?: Prisma.UtilizadorMinOrderByAggregateInput
+  _sum?: Prisma.UtilizadorSumOrderByAggregateInput
 }
 
 export type UtilizadorScalarWhereWithAggregatesInput = {
@@ -250,6 +308,8 @@ export type UtilizadorScalarWhereWithAggregatesInput = {
   nome?: Prisma.StringWithAggregatesFilter<"Utilizador"> | string
   email?: Prisma.StringWithAggregatesFilter<"Utilizador"> | string
   password?: Prisma.StringWithAggregatesFilter<"Utilizador"> | string
+  tentativasFalhadas?: Prisma.IntWithAggregatesFilter<"Utilizador"> | number
+  bloqueadoAte?: Prisma.DateTimeNullableWithAggregatesFilter<"Utilizador"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Utilizador"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Utilizador"> | Date | string
   empresaId?: Prisma.StringWithAggregatesFilter<"Utilizador"> | string
@@ -260,6 +320,8 @@ export type UtilizadorCreateInput = {
   nome: string
   email: string
   password: string
+  tentativasFalhadas?: number
+  bloqueadoAte?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   empresa: Prisma.EmpresaCreateNestedOneWithoutUtilizadoresInput
@@ -271,6 +333,8 @@ export type UtilizadorUncheckedCreateInput = {
   nome: string
   email: string
   password: string
+  tentativasFalhadas?: number
+  bloqueadoAte?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   empresaId: string
@@ -282,6 +346,8 @@ export type UtilizadorUpdateInput = {
   nome?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  tentativasFalhadas?: Prisma.IntFieldUpdateOperationsInput | number
+  bloqueadoAte?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   empresa?: Prisma.EmpresaUpdateOneRequiredWithoutUtilizadoresNestedInput
@@ -293,6 +359,8 @@ export type UtilizadorUncheckedUpdateInput = {
   nome?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  tentativasFalhadas?: Prisma.IntFieldUpdateOperationsInput | number
+  bloqueadoAte?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   empresaId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -304,6 +372,8 @@ export type UtilizadorCreateManyInput = {
   nome: string
   email: string
   password: string
+  tentativasFalhadas?: number
+  bloqueadoAte?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   empresaId: string
@@ -314,6 +384,8 @@ export type UtilizadorUpdateManyMutationInput = {
   nome?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  tentativasFalhadas?: Prisma.IntFieldUpdateOperationsInput | number
+  bloqueadoAte?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -323,6 +395,8 @@ export type UtilizadorUncheckedUpdateManyInput = {
   nome?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  tentativasFalhadas?: Prisma.IntFieldUpdateOperationsInput | number
+  bloqueadoAte?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   empresaId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -343,9 +417,15 @@ export type UtilizadorCountOrderByAggregateInput = {
   nome?: Prisma.SortOrder
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
+  tentativasFalhadas?: Prisma.SortOrder
+  bloqueadoAte?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   empresaId?: Prisma.SortOrder
+}
+
+export type UtilizadorAvgOrderByAggregateInput = {
+  tentativasFalhadas?: Prisma.SortOrder
 }
 
 export type UtilizadorMaxOrderByAggregateInput = {
@@ -353,6 +433,8 @@ export type UtilizadorMaxOrderByAggregateInput = {
   nome?: Prisma.SortOrder
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
+  tentativasFalhadas?: Prisma.SortOrder
+  bloqueadoAte?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   empresaId?: Prisma.SortOrder
@@ -363,9 +445,15 @@ export type UtilizadorMinOrderByAggregateInput = {
   nome?: Prisma.SortOrder
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
+  tentativasFalhadas?: Prisma.SortOrder
+  bloqueadoAte?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   empresaId?: Prisma.SortOrder
+}
+
+export type UtilizadorSumOrderByAggregateInput = {
+  tentativasFalhadas?: Prisma.SortOrder
 }
 
 export type UtilizadorScalarRelationFilter = {
@@ -415,6 +503,18 @@ export type UtilizadorUncheckedUpdateManyWithoutEmpresaNestedInput = {
   deleteMany?: Prisma.UtilizadorScalarWhereInput | Prisma.UtilizadorScalarWhereInput[]
 }
 
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
+}
+
 export type UtilizadorCreateNestedOneWithoutTokensRecuperacaoInput = {
   create?: Prisma.XOR<Prisma.UtilizadorCreateWithoutTokensRecuperacaoInput, Prisma.UtilizadorUncheckedCreateWithoutTokensRecuperacaoInput>
   connectOrCreate?: Prisma.UtilizadorCreateOrConnectWithoutTokensRecuperacaoInput
@@ -434,6 +534,8 @@ export type UtilizadorCreateWithoutEmpresaInput = {
   nome: string
   email: string
   password: string
+  tentativasFalhadas?: number
+  bloqueadoAte?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   tokensRecuperacao?: Prisma.TokenRecuperacaoCreateNestedManyWithoutUtilizadorInput
@@ -444,6 +546,8 @@ export type UtilizadorUncheckedCreateWithoutEmpresaInput = {
   nome: string
   email: string
   password: string
+  tentativasFalhadas?: number
+  bloqueadoAte?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   tokensRecuperacao?: Prisma.TokenRecuperacaoUncheckedCreateNestedManyWithoutUtilizadorInput
@@ -483,6 +587,8 @@ export type UtilizadorScalarWhereInput = {
   nome?: Prisma.StringFilter<"Utilizador"> | string
   email?: Prisma.StringFilter<"Utilizador"> | string
   password?: Prisma.StringFilter<"Utilizador"> | string
+  tentativasFalhadas?: Prisma.IntFilter<"Utilizador"> | number
+  bloqueadoAte?: Prisma.DateTimeNullableFilter<"Utilizador"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Utilizador"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Utilizador"> | Date | string
   empresaId?: Prisma.StringFilter<"Utilizador"> | string
@@ -493,6 +599,8 @@ export type UtilizadorCreateWithoutTokensRecuperacaoInput = {
   nome: string
   email: string
   password: string
+  tentativasFalhadas?: number
+  bloqueadoAte?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   empresa: Prisma.EmpresaCreateNestedOneWithoutUtilizadoresInput
@@ -503,6 +611,8 @@ export type UtilizadorUncheckedCreateWithoutTokensRecuperacaoInput = {
   nome: string
   email: string
   password: string
+  tentativasFalhadas?: number
+  bloqueadoAte?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   empresaId: string
@@ -529,6 +639,8 @@ export type UtilizadorUpdateWithoutTokensRecuperacaoInput = {
   nome?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  tentativasFalhadas?: Prisma.IntFieldUpdateOperationsInput | number
+  bloqueadoAte?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   empresa?: Prisma.EmpresaUpdateOneRequiredWithoutUtilizadoresNestedInput
@@ -539,6 +651,8 @@ export type UtilizadorUncheckedUpdateWithoutTokensRecuperacaoInput = {
   nome?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  tentativasFalhadas?: Prisma.IntFieldUpdateOperationsInput | number
+  bloqueadoAte?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   empresaId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -549,6 +663,8 @@ export type UtilizadorCreateManyEmpresaInput = {
   nome: string
   email: string
   password: string
+  tentativasFalhadas?: number
+  bloqueadoAte?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -558,6 +674,8 @@ export type UtilizadorUpdateWithoutEmpresaInput = {
   nome?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  tentativasFalhadas?: Prisma.IntFieldUpdateOperationsInput | number
+  bloqueadoAte?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tokensRecuperacao?: Prisma.TokenRecuperacaoUpdateManyWithoutUtilizadorNestedInput
@@ -568,6 +686,8 @@ export type UtilizadorUncheckedUpdateWithoutEmpresaInput = {
   nome?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  tentativasFalhadas?: Prisma.IntFieldUpdateOperationsInput | number
+  bloqueadoAte?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tokensRecuperacao?: Prisma.TokenRecuperacaoUncheckedUpdateManyWithoutUtilizadorNestedInput
@@ -578,6 +698,8 @@ export type UtilizadorUncheckedUpdateManyWithoutEmpresaInput = {
   nome?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  tentativasFalhadas?: Prisma.IntFieldUpdateOperationsInput | number
+  bloqueadoAte?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -618,6 +740,8 @@ export type UtilizadorSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   nome?: boolean
   email?: boolean
   password?: boolean
+  tentativasFalhadas?: boolean
+  bloqueadoAte?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   empresaId?: boolean
@@ -631,6 +755,8 @@ export type UtilizadorSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   nome?: boolean
   email?: boolean
   password?: boolean
+  tentativasFalhadas?: boolean
+  bloqueadoAte?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   empresaId?: boolean
@@ -642,6 +768,8 @@ export type UtilizadorSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   nome?: boolean
   email?: boolean
   password?: boolean
+  tentativasFalhadas?: boolean
+  bloqueadoAte?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   empresaId?: boolean
@@ -653,12 +781,14 @@ export type UtilizadorSelectScalar = {
   nome?: boolean
   email?: boolean
   password?: boolean
+  tentativasFalhadas?: boolean
+  bloqueadoAte?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   empresaId?: boolean
 }
 
-export type UtilizadorOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nome" | "email" | "password" | "createdAt" | "updatedAt" | "empresaId", ExtArgs["result"]["utilizador"]>
+export type UtilizadorOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nome" | "email" | "password" | "tentativasFalhadas" | "bloqueadoAte" | "createdAt" | "updatedAt" | "empresaId", ExtArgs["result"]["utilizador"]>
 export type UtilizadorInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   empresa?: boolean | Prisma.EmpresaDefaultArgs<ExtArgs>
   tokensRecuperacao?: boolean | Prisma.Utilizador$tokensRecuperacaoArgs<ExtArgs>
@@ -682,6 +812,8 @@ export type $UtilizadorPayload<ExtArgs extends runtime.Types.Extensions.Internal
     nome: string
     email: string
     password: string
+    tentativasFalhadas: number
+    bloqueadoAte: Date | null
     createdAt: Date
     updatedAt: Date
     empresaId: string
@@ -1114,6 +1246,8 @@ export interface UtilizadorFieldRefs {
   readonly nome: Prisma.FieldRef<"Utilizador", 'String'>
   readonly email: Prisma.FieldRef<"Utilizador", 'String'>
   readonly password: Prisma.FieldRef<"Utilizador", 'String'>
+  readonly tentativasFalhadas: Prisma.FieldRef<"Utilizador", 'Int'>
+  readonly bloqueadoAte: Prisma.FieldRef<"Utilizador", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Utilizador", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Utilizador", 'DateTime'>
   readonly empresaId: Prisma.FieldRef<"Utilizador", 'String'>

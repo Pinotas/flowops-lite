@@ -45,6 +45,10 @@ const ESTADOS_TERMINADOS: EstadoTrabalho[] = ["CONCLUIDO", "CANCELADO"];
 const inputClass =
   "w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-ink)] placeholder:text-[var(--color-ink-faint)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]";
 
+function hojeISO() {
+  return new Date().toISOString().slice(0, 10);
+}
+
 function formatarData(dataISO: string) {
   return new Date(dataISO).toLocaleDateString("pt-PT", {
     day: "2-digit",
@@ -66,6 +70,13 @@ export default function TrabalhosPage() {
   const [clienteId, setClienteId] = useState("");
   const [data, setData] = useState("");
   const [notas, setNotas] = useState("");
+
+  const [editandoId, setEditandoId] = useState<string | null>(null);
+  const [editClienteId, setEditClienteId] = useState("");
+  const [editData, setEditData] = useState("");
+  const [editNotas, setEditNotas] = useState("");
+  const [guardandoEdicao, setGuardandoEdicao] = useState(false);
+  const [apagandoId, setApagandoId] = useState<string | null>(null);
 
   async function carregarDados() {
     try {
@@ -98,6 +109,10 @@ export default function TrabalhosPage() {
     }
     if (!data) {
       setErro("Indica a data do trabalho.");
+      return;
+    }
+    if (data < hojeISO()) {
+      setErro("A data do trabalho não pode ser no passado.");
       return;
     }
 
@@ -150,6 +165,79 @@ export default function TrabalhosPage() {
     }
   }
 
+  function iniciarEdicao(trabalho: Trabalho) {
+    setEditandoId(trabalho.id);
+    setEditClienteId(trabalho.clienteId);
+    setEditData(trabalho.data.slice(0, 10));
+    setEditNotas(trabalho.notas || "");
+    setErro(null);
+  }
+
+  function cancelarEdicao() {
+    setEditandoId(null);
+  }
+
+  async function handleGuardarEdicao(e: React.FormEvent) {
+    e.preventDefault();
+    if (!editandoId) return;
+    setErro(null);
+
+    if (!editClienteId || !editData) {
+      setErro("Cliente e data são obrigatórios.");
+      return;
+    }
+
+    setGuardandoEdicao(true);
+    try {
+      const res = await fetch(`/api/jobs/${editandoId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          clienteId: editClienteId,
+          data: editData,
+          notas: editNotas || null,
+        }),
+      });
+
+      if (!res.ok) {
+        const resData = await res.json();
+        throw new Error(resData.error || "Erro ao atualizar trabalho");
+      }
+
+      setEditandoId(null);
+      await carregarDados();
+    } catch (err) {
+      setErro(err instanceof Error ? err.message : "Erro ao atualizar trabalho");
+    } finally {
+      setGuardandoEdicao(false);
+    }
+  }
+
+  async function handleApagar(trabalho: Trabalho) {
+    if (
+      !window.confirm(
+        `Apagar o trabalho de ${formatarData(trabalho.data)}? Esta ação não pode ser desfeita.`
+      )
+    ) {
+      return;
+    }
+
+    setErro(null);
+    setApagandoId(trabalho.id);
+    try {
+      const res = await fetch(`/api/jobs/${trabalho.id}`, { method: "DELETE" });
+      if (!res.ok) {
+        const resData = await res.json();
+        throw new Error(resData.error || "Erro ao apagar trabalho");
+      }
+      await carregarDados();
+    } catch (err) {
+      setErro(err instanceof Error ? err.message : "Erro ao apagar trabalho");
+    } finally {
+      setApagandoId(null);
+    }
+  }
+
   function handleToggleTerminados() {
     setVerTerminados((v) => !v);
     setSubFiltro("TODOS");
@@ -175,7 +263,7 @@ export default function TrabalhosPage() {
 
   return (
     <div className="min-h-screen bg-[var(--color-bg)]">
-      <div className="mx-auto max-w-6xl px-6 py-10">
+      <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-10">
         <header className="mb-8">
           <h1 className="text-2xl font-semibold tracking-tight text-[var(--color-ink)]">
             Trabalhos
@@ -224,6 +312,7 @@ export default function TrabalhosPage() {
                   <input
                     type="date"
                     value={data}
+                    min={hojeISO()}
                     onChange={(e) => setData(e.target.value)}
                     className={inputClass}
                   />
@@ -349,53 +438,125 @@ export default function TrabalhosPage() {
                 ))}
               </div>
             ) : (
-              <table className="w-full text-left text-sm">
+              <div className="overflow-x-auto">
+              <table className="w-full min-w-[640px] text-left text-sm">
                 <thead>
                   <tr className="border-b border-[var(--color-border)] text-xs uppercase tracking-wide text-[var(--color-ink-faint)]">
                     <th className="px-5 py-3 font-medium">Data</th>
                     <th className="px-5 py-3 font-medium">Cliente</th>
                     <th className="px-5 py-3 font-medium">Notas</th>
                     <th className="px-5 py-3 font-medium">Estado</th>
+                    <th className="px-5 py-3 font-medium"></th>
                   </tr>
                 </thead>
                 <tbody>
-                  {trabalhosVisiveis.map((trabalho) => (
-                    <tr
-                      key={trabalho.id}
-                      className="border-b border-[var(--color-border)] last:border-0"
-                    >
-                      <td className="tabular px-5 py-3 font-medium text-[var(--color-ink)]">
-                        {formatarData(trabalho.data)}
-                      </td>
-                      <td className="px-5 py-3 text-[var(--color-ink-muted)]">
-                        {trabalho.cliente?.nome ?? "—"}
-                      </td>
-                      <td className="px-5 py-3 text-[var(--color-ink-faint)]">
-                        {trabalho.notas || "—"}
-                      </td>
-                      <td className="px-5 py-3">
-                        <select
-                          value={trabalho.estado}
-                          disabled={atualizandoId === trabalho.id}
-                          onChange={(e) =>
-                            handleMudarEstado(
-                              trabalho.id,
-                              e.target.value as EstadoTrabalho
-                            )
-                          }
-                          className={`cursor-pointer rounded-full border-0 px-2.5 py-1 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)] ${ESTADO_COR[trabalho.estado]} ${atualizandoId === trabalho.id ? "opacity-50" : ""}`}
-                        >
-                          {Object.entries(ESTADO_LABEL).map(([valor, label]) => (
-                            <option key={valor} value={valor}>
-                              {label}
-                            </option>
-                          ))}
-                        </select>
-                      </td>
-                    </tr>
-                  ))}
+                  {trabalhosVisiveis.map((trabalho) =>
+                    editandoId === trabalho.id ? (
+                      <tr key={trabalho.id} className="border-b border-[var(--color-border)] last:border-0 bg-[var(--color-bg)]">
+                        <td colSpan={5} className="px-5 py-4">
+                          <form onSubmit={handleGuardarEdicao} className="grid gap-2 sm:grid-cols-3">
+                            <select
+                              value={editClienteId}
+                              onChange={(e) => setEditClienteId(e.target.value)}
+                              className={inputClass}
+                            >
+                              {clientes.map((c) => (
+                                <option key={c.id} value={c.id}>
+                                  {c.nome}
+                                </option>
+                              ))}
+                            </select>
+                            <input
+                              type="date"
+                              value={editData}
+                              onChange={(e) => setEditData(e.target.value)}
+                              className={inputClass}
+                            />
+                            <input
+                              type="text"
+                              value={editNotas}
+                              onChange={(e) => setEditNotas(e.target.value)}
+                              className={inputClass}
+                              placeholder="Notas"
+                            />
+                            {erro && (
+                              <p className="col-span-3 text-xs font-medium text-[var(--color-danger)]">{erro}</p>
+                            )}
+                            <div className="col-span-3 flex gap-2">
+                              <button
+                                type="submit"
+                                disabled={guardandoEdicao}
+                                className="rounded-lg bg-[var(--color-accent)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[var(--color-accent-hover)] disabled:opacity-50"
+                              >
+                                {guardandoEdicao ? "A guardar..." : "Guardar"}
+                              </button>
+                              <button
+                                type="button"
+                                onClick={cancelarEdicao}
+                                className="rounded-lg border border-[var(--color-border)] px-4 py-2 text-sm font-medium text-[var(--color-ink-muted)] hover:bg-[var(--color-surface)]"
+                              >
+                                Cancelar
+                              </button>
+                            </div>
+                          </form>
+                        </td>
+                      </tr>
+                    ) : (
+                      <tr
+                        key={trabalho.id}
+                        className="border-b border-[var(--color-border)] last:border-0"
+                      >
+                        <td className="tabular px-5 py-3 font-medium text-[var(--color-ink)]">
+                          {formatarData(trabalho.data)}
+                        </td>
+                        <td className="px-5 py-3 text-[var(--color-ink-muted)]">
+                          {trabalho.cliente?.nome ?? "—"}
+                        </td>
+                        <td className="px-5 py-3 text-[var(--color-ink-faint)]">
+                          {trabalho.notas || "—"}
+                        </td>
+                        <td className="px-5 py-3">
+                          <select
+                            value={trabalho.estado}
+                            disabled={atualizandoId === trabalho.id}
+                            onChange={(e) =>
+                              handleMudarEstado(
+                                trabalho.id,
+                                e.target.value as EstadoTrabalho
+                              )
+                            }
+                            className={`cursor-pointer rounded-full border-0 px-2.5 py-1 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)] ${ESTADO_COR[trabalho.estado]} ${atualizandoId === trabalho.id ? "opacity-50" : ""}`}
+                          >
+                            {Object.entries(ESTADO_LABEL).map(([valor, label]) => (
+                              <option key={valor} value={valor}>
+                                {label}
+                              </option>
+                            ))}
+                          </select>
+                        </td>
+                        <td className="px-5 py-3 text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <button
+                              onClick={() => iniciarEdicao(trabalho)}
+                              className="rounded-md border border-[var(--color-border)] px-2.5 py-1 text-xs font-medium text-[var(--color-ink-muted)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
+                            >
+                              Editar
+                            </button>
+                            <button
+                              onClick={() => handleApagar(trabalho)}
+                              disabled={apagandoId === trabalho.id}
+                              className="rounded-md border border-[var(--color-border)] px-2.5 py-1 text-xs font-medium text-[var(--color-ink-muted)] transition-colors hover:border-[var(--color-danger)] hover:text-[var(--color-danger)] disabled:opacity-50"
+                            >
+                              {apagandoId === trabalho.id ? "A apagar..." : "Apagar"}
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    )
+                  )}
                 </tbody>
               </table>
+              </div>
             )}
           </div>
         </div>

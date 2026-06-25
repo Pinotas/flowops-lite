@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 type Cliente = {
   id: string;
@@ -32,12 +32,14 @@ function formatarPreco(preco: number) {
   }).format(preco);
 }
 
-export default function NovoOrcamentoPage() {
+export default function EditarOrcamentoPage() {
   const router = useRouter();
+  const params = useParams<{ id: string }>();
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
+  const [naoEncontrado, setNaoEncontrado] = useState(false);
 
   const [clienteId, setClienteId] = useState("");
   const [linhasForm, setLinhasForm] = useState<LinhaFormulario[]>([
@@ -45,12 +47,35 @@ export default function NovoOrcamentoPage() {
   ]);
 
   useEffect(() => {
-    fetch("/api/customers")
-      .then((res) => res.json())
-      .then(setClientes)
-      .catch(() => setErro("Não foi possível carregar os clientes."))
-      .finally(() => setLoading(false));
-  }, []);
+    async function carregar() {
+      try {
+        const [resClientes, resOrcamento] = await Promise.all([
+          fetch("/api/customers"),
+          fetch(`/api/budgets/${params.id}`),
+        ]);
+        setClientes(await resClientes.json());
+
+        if (resOrcamento.ok) {
+          const orcamento = await resOrcamento.json();
+          setClienteId(orcamento.clienteId);
+          setLinhasForm(
+            orcamento.linhas.map((l: { descricao: string; quantidade: number; precoUnit: number }) => ({
+              descricao: l.descricao,
+              quantidade: String(l.quantidade),
+              precoUnit: String(l.precoUnit),
+            }))
+          );
+        } else {
+          setNaoEncontrado(true);
+        }
+      } catch {
+        setErro("Não foi possível carregar os dados.");
+      } finally {
+        setLoading(false);
+      }
+    }
+    carregar();
+  }, [params.id]);
 
   function handleAdicionarLinha() {
     setLinhasForm((prev) => [
@@ -99,8 +124,8 @@ export default function NovoOrcamentoPage() {
 
     setSubmitting(true);
     try {
-      const res = await fetch("/api/budgets", {
-        method: "POST",
+      const res = await fetch(`/api/budgets/${params.id}`, {
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           clienteId,
@@ -114,12 +139,12 @@ export default function NovoOrcamentoPage() {
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error || "Erro ao criar orçamento");
+        throw new Error(data.error || "Erro ao atualizar orçamento");
       }
 
       router.push("/orcamentos");
     } catch (err) {
-      setErro(err instanceof Error ? err.message : "Erro ao criar orçamento");
+      setErro(err instanceof Error ? err.message : "Erro ao atualizar orçamento");
     } finally {
       setSubmitting(false);
     }
@@ -136,17 +161,16 @@ export default function NovoOrcamentoPage() {
             ← Voltar a orçamentos
           </a>
           <h1 className="mt-2 text-2xl font-semibold tracking-tight text-[var(--color-ink)]">
-            Novo orçamento
+            Editar orçamento
           </h1>
         </header>
 
         <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5">
-          {clientes.length === 0 && !loading ? (
-            <p className="text-sm text-[var(--color-ink-muted)]">
-              Precisas de ter pelo menos um cliente registado antes de criar um orçamento.{" "}
-              <a href="/clientes" className="font-medium text-[var(--color-accent)] underline">
-                Adicionar cliente
-              </a>
+          {loading ? (
+            <p className="text-sm text-[var(--color-ink-muted)]">A carregar...</p>
+          ) : naoEncontrado ? (
+            <p className="text-sm font-medium text-[var(--color-danger)]">
+              Orçamento não encontrado.
             </p>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-3">
@@ -247,7 +271,7 @@ export default function NovoOrcamentoPage() {
                 disabled={submitting}
                 className="w-full rounded-lg bg-[var(--color-accent)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[var(--color-accent-hover)] disabled:opacity-50"
               >
-                {submitting ? "A guardar..." : "Criar orçamento"}
+                {submitting ? "A guardar..." : "Guardar alterações"}
               </button>
             </form>
           )}

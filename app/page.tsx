@@ -28,8 +28,14 @@ export default function LoginPage() {
       });
 
       if (resultado?.error) {
+        const matchBloqueio = resultado.code?.match(/^conta-bloqueada-(\d+)$/);
         if (resultado.code === "email-nao-existe") {
           setErro("Este email não está registado. Verifica se o escreveste corretamente ou cria uma conta.");
+        } else if (matchBloqueio) {
+          const minutos = matchBloqueio[1];
+          setErro(
+            `Demasiadas tentativas falhadas. A conta foi temporariamente bloqueada. Tenta novamente dentro de ${minutos} minuto${minutos === "1" ? "" : "s"}.`
+          );
         } else {
           setErro("Email ou password incorretos.");
         }

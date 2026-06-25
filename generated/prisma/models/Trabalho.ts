@@ -29,6 +29,7 @@ export type TrabalhoMinAggregateOutputType = {
   data: Date | null
   notas: string | null
   estado: $Enums.EstadoTrabalho | null
+  lembreteEnviado: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
   clienteId: string | null
@@ -40,6 +41,7 @@ export type TrabalhoMaxAggregateOutputType = {
   data: Date | null
   notas: string | null
   estado: $Enums.EstadoTrabalho | null
+  lembreteEnviado: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
   clienteId: string | null
@@ -51,6 +53,7 @@ export type TrabalhoCountAggregateOutputType = {
   data: number
   notas: number
   estado: number
+  lembreteEnviado: number
   createdAt: number
   updatedAt: number
   clienteId: number
@@ -64,6 +67,7 @@ export type TrabalhoMinAggregateInputType = {
   data?: true
   notas?: true
   estado?: true
+  lembreteEnviado?: true
   createdAt?: true
   updatedAt?: true
   clienteId?: true
@@ -75,6 +79,7 @@ export type TrabalhoMaxAggregateInputType = {
   data?: true
   notas?: true
   estado?: true
+  lembreteEnviado?: true
   createdAt?: true
   updatedAt?: true
   clienteId?: true
@@ -86,6 +91,7 @@ export type TrabalhoCountAggregateInputType = {
   data?: true
   notas?: true
   estado?: true
+  lembreteEnviado?: true
   createdAt?: true
   updatedAt?: true
   clienteId?: true
@@ -170,6 +176,7 @@ export type TrabalhoGroupByOutputType = {
   data: Date
   notas: string | null
   estado: $Enums.EstadoTrabalho
+  lembreteEnviado: boolean
   createdAt: Date
   updatedAt: Date
   clienteId: string
@@ -202,6 +209,7 @@ export type TrabalhoWhereInput = {
   data?: Prisma.DateTimeFilter<"Trabalho"> | Date | string
   notas?: Prisma.StringNullableFilter<"Trabalho"> | string | null
   estado?: Prisma.EnumEstadoTrabalhoFilter<"Trabalho"> | $Enums.EstadoTrabalho
+  lembreteEnviado?: Prisma.BoolFilter<"Trabalho"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Trabalho"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Trabalho"> | Date | string
   clienteId?: Prisma.StringFilter<"Trabalho"> | string
@@ -215,6 +223,7 @@ export type TrabalhoOrderByWithRelationInput = {
   data?: Prisma.SortOrder
   notas?: Prisma.SortOrderInput | Prisma.SortOrder
   estado?: Prisma.SortOrder
+  lembreteEnviado?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   clienteId?: Prisma.SortOrder
@@ -231,6 +240,7 @@ export type TrabalhoWhereUniqueInput = Prisma.AtLeast<{
   data?: Prisma.DateTimeFilter<"Trabalho"> | Date | string
   notas?: Prisma.StringNullableFilter<"Trabalho"> | string | null
   estado?: Prisma.EnumEstadoTrabalhoFilter<"Trabalho"> | $Enums.EstadoTrabalho
+  lembreteEnviado?: Prisma.BoolFilter<"Trabalho"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Trabalho"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Trabalho"> | Date | string
   clienteId?: Prisma.StringFilter<"Trabalho"> | string
@@ -244,6 +254,7 @@ export type TrabalhoOrderByWithAggregationInput = {
   data?: Prisma.SortOrder
   notas?: Prisma.SortOrderInput | Prisma.SortOrder
   estado?: Prisma.SortOrder
+  lembreteEnviado?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   clienteId?: Prisma.SortOrder
@@ -261,6 +272,7 @@ export type TrabalhoScalarWhereWithAggregatesInput = {
   data?: Prisma.DateTimeWithAggregatesFilter<"Trabalho"> | Date | string
   notas?: Prisma.StringNullableWithAggregatesFilter<"Trabalho"> | string | null
   estado?: Prisma.EnumEstadoTrabalhoWithAggregatesFilter<"Trabalho"> | $Enums.EstadoTrabalho
+  lembreteEnviado?: Prisma.BoolWithAggregatesFilter<"Trabalho"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Trabalho"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Trabalho"> | Date | string
   clienteId?: Prisma.StringWithAggregatesFilter<"Trabalho"> | string
@@ -272,6 +284,7 @@ export type TrabalhoCreateInput = {
   data: Date | string
   notas?: string | null
   estado?: $Enums.EstadoTrabalho
+  lembreteEnviado?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   cliente: Prisma.ClienteCreateNestedOneWithoutTrabalhosInput
@@ -283,6 +296,7 @@ export type TrabalhoUncheckedCreateInput = {
   data: Date | string
   notas?: string | null
   estado?: $Enums.EstadoTrabalho
+  lembreteEnviado?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   clienteId: string
@@ -294,6 +308,7 @@ export type TrabalhoUpdateInput = {
   data?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   estado?: Prisma.EnumEstadoTrabalhoFieldUpdateOperationsInput | $Enums.EstadoTrabalho
+  lembreteEnviado?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cliente?: Prisma.ClienteUpdateOneRequiredWithoutTrabalhosNestedInput
@@ -305,6 +320,7 @@ export type TrabalhoUncheckedUpdateInput = {
   data?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   estado?: Prisma.EnumEstadoTrabalhoFieldUpdateOperationsInput | $Enums.EstadoTrabalho
+  lembreteEnviado?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clienteId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -316,6 +332,7 @@ export type TrabalhoCreateManyInput = {
   data: Date | string
   notas?: string | null
   estado?: $Enums.EstadoTrabalho
+  lembreteEnviado?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   clienteId: string
@@ -327,6 +344,7 @@ export type TrabalhoUpdateManyMutationInput = {
   data?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   estado?: Prisma.EnumEstadoTrabalhoFieldUpdateOperationsInput | $Enums.EstadoTrabalho
+  lembreteEnviado?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -336,6 +354,7 @@ export type TrabalhoUncheckedUpdateManyInput = {
   data?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   estado?: Prisma.EnumEstadoTrabalhoFieldUpdateOperationsInput | $Enums.EstadoTrabalho
+  lembreteEnviado?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clienteId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -357,6 +376,7 @@ export type TrabalhoCountOrderByAggregateInput = {
   data?: Prisma.SortOrder
   notas?: Prisma.SortOrder
   estado?: Prisma.SortOrder
+  lembreteEnviado?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   clienteId?: Prisma.SortOrder
@@ -368,6 +388,7 @@ export type TrabalhoMaxOrderByAggregateInput = {
   data?: Prisma.SortOrder
   notas?: Prisma.SortOrder
   estado?: Prisma.SortOrder
+  lembreteEnviado?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   clienteId?: Prisma.SortOrder
@@ -379,6 +400,7 @@ export type TrabalhoMinOrderByAggregateInput = {
   data?: Prisma.SortOrder
   notas?: Prisma.SortOrder
   estado?: Prisma.SortOrder
+  lembreteEnviado?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   clienteId?: Prisma.SortOrder
@@ -478,6 +500,7 @@ export type TrabalhoCreateWithoutEmpresaInput = {
   data: Date | string
   notas?: string | null
   estado?: $Enums.EstadoTrabalho
+  lembreteEnviado?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   cliente: Prisma.ClienteCreateNestedOneWithoutTrabalhosInput
@@ -488,6 +511,7 @@ export type TrabalhoUncheckedCreateWithoutEmpresaInput = {
   data: Date | string
   notas?: string | null
   estado?: $Enums.EstadoTrabalho
+  lembreteEnviado?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   clienteId: string
@@ -527,6 +551,7 @@ export type TrabalhoScalarWhereInput = {
   data?: Prisma.DateTimeFilter<"Trabalho"> | Date | string
   notas?: Prisma.StringNullableFilter<"Trabalho"> | string | null
   estado?: Prisma.EnumEstadoTrabalhoFilter<"Trabalho"> | $Enums.EstadoTrabalho
+  lembreteEnviado?: Prisma.BoolFilter<"Trabalho"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Trabalho"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Trabalho"> | Date | string
   clienteId?: Prisma.StringFilter<"Trabalho"> | string
@@ -538,6 +563,7 @@ export type TrabalhoCreateWithoutClienteInput = {
   data: Date | string
   notas?: string | null
   estado?: $Enums.EstadoTrabalho
+  lembreteEnviado?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   empresa: Prisma.EmpresaCreateNestedOneWithoutTrabalhosInput
@@ -548,6 +574,7 @@ export type TrabalhoUncheckedCreateWithoutClienteInput = {
   data: Date | string
   notas?: string | null
   estado?: $Enums.EstadoTrabalho
+  lembreteEnviado?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   empresaId: string
@@ -584,6 +611,7 @@ export type TrabalhoCreateManyEmpresaInput = {
   data: Date | string
   notas?: string | null
   estado?: $Enums.EstadoTrabalho
+  lembreteEnviado?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   clienteId: string
@@ -594,6 +622,7 @@ export type TrabalhoUpdateWithoutEmpresaInput = {
   data?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   estado?: Prisma.EnumEstadoTrabalhoFieldUpdateOperationsInput | $Enums.EstadoTrabalho
+  lembreteEnviado?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cliente?: Prisma.ClienteUpdateOneRequiredWithoutTrabalhosNestedInput
@@ -604,6 +633,7 @@ export type TrabalhoUncheckedUpdateWithoutEmpresaInput = {
   data?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   estado?: Prisma.EnumEstadoTrabalhoFieldUpdateOperationsInput | $Enums.EstadoTrabalho
+  lembreteEnviado?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clienteId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -614,6 +644,7 @@ export type TrabalhoUncheckedUpdateManyWithoutEmpresaInput = {
   data?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   estado?: Prisma.EnumEstadoTrabalhoFieldUpdateOperationsInput | $Enums.EstadoTrabalho
+  lembreteEnviado?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clienteId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -624,6 +655,7 @@ export type TrabalhoCreateManyClienteInput = {
   data: Date | string
   notas?: string | null
   estado?: $Enums.EstadoTrabalho
+  lembreteEnviado?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   empresaId: string
@@ -634,6 +666,7 @@ export type TrabalhoUpdateWithoutClienteInput = {
   data?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   estado?: Prisma.EnumEstadoTrabalhoFieldUpdateOperationsInput | $Enums.EstadoTrabalho
+  lembreteEnviado?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   empresa?: Prisma.EmpresaUpdateOneRequiredWithoutTrabalhosNestedInput
@@ -644,6 +677,7 @@ export type TrabalhoUncheckedUpdateWithoutClienteInput = {
   data?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   estado?: Prisma.EnumEstadoTrabalhoFieldUpdateOperationsInput | $Enums.EstadoTrabalho
+  lembreteEnviado?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   empresaId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -654,6 +688,7 @@ export type TrabalhoUncheckedUpdateManyWithoutClienteInput = {
   data?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   estado?: Prisma.EnumEstadoTrabalhoFieldUpdateOperationsInput | $Enums.EstadoTrabalho
+  lembreteEnviado?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   empresaId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -666,6 +701,7 @@ export type TrabalhoSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   data?: boolean
   notas?: boolean
   estado?: boolean
+  lembreteEnviado?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   clienteId?: boolean
@@ -679,6 +715,7 @@ export type TrabalhoSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   data?: boolean
   notas?: boolean
   estado?: boolean
+  lembreteEnviado?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   clienteId?: boolean
@@ -692,6 +729,7 @@ export type TrabalhoSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   data?: boolean
   notas?: boolean
   estado?: boolean
+  lembreteEnviado?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   clienteId?: boolean
@@ -705,13 +743,14 @@ export type TrabalhoSelectScalar = {
   data?: boolean
   notas?: boolean
   estado?: boolean
+  lembreteEnviado?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   clienteId?: boolean
   empresaId?: boolean
 }
 
-export type TrabalhoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "data" | "notas" | "estado" | "createdAt" | "updatedAt" | "clienteId" | "empresaId", ExtArgs["result"]["trabalho"]>
+export type TrabalhoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "data" | "notas" | "estado" | "lembreteEnviado" | "createdAt" | "updatedAt" | "clienteId" | "empresaId", ExtArgs["result"]["trabalho"]>
 export type TrabalhoInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
   empresa?: boolean | Prisma.EmpresaDefaultArgs<ExtArgs>
@@ -736,6 +775,7 @@ export type $TrabalhoPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     data: Date
     notas: string | null
     estado: $Enums.EstadoTrabalho
+    lembreteEnviado: boolean
     createdAt: Date
     updatedAt: Date
     clienteId: string
@@ -1169,6 +1209,7 @@ export interface TrabalhoFieldRefs {
   readonly data: Prisma.FieldRef<"Trabalho", 'DateTime'>
   readonly notas: Prisma.FieldRef<"Trabalho", 'String'>
   readonly estado: Prisma.FieldRef<"Trabalho", 'EstadoTrabalho'>
+  readonly lembreteEnviado: Prisma.FieldRef<"Trabalho", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Trabalho", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Trabalho", 'DateTime'>
   readonly clienteId: Prisma.FieldRef<"Trabalho", 'String'>

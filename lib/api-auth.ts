@@ -11,3 +11,17 @@ export async function getEmpresaId(): Promise<string | null> {
   }
   return session.user.empresaId;
 }
+
+/**
+ * Devolve { empresaId, utilizadorId } da sessão atual, ou null se não autenticado.
+ */
+export async function getSessaoAtual(): Promise<{
+  empresaId: string;
+  utilizadorId: string;
+} | null> {
+  const session = await auth();
+  if (!session?.user?.empresaId || !session.user.id) {
+    return null;
+  }
+  return { empresaId: session.user.empresaId, utilizadorId: session.user.id };
+}

@@ -12,9 +12,17 @@ const ROTAS_PUBLICAS = [
   "/redefinir-password",
 ];
 
+// Rotas públicas que NUNCA redirecionam, mesmo com sessão ativa — usadas
+// por clientes externos (sem conta) para responder a um orçamento.
+const ROTAS_PUBLICAS_SEMPRE = ["/proposta"];
+
 export default auth((req) => {
   const { pathname } = req.nextUrl;
   const autenticado = !!req.auth;
+
+  if (ROTAS_PUBLICAS_SEMPRE.some((rota) => pathname.startsWith(rota))) {
+    return NextResponse.next();
+  }
 
   const rotaPublica =
     pathname === "/" ||

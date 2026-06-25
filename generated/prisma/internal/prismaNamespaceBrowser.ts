@@ -94,6 +94,8 @@ export const UtilizadorScalarFieldEnum = {
   nome: 'nome',
   email: 'email',
   password: 'password',
+  tentativasFalhadas: 'tentativasFalhadas',
+  bloqueadoAte: 'bloqueadoAte',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   empresaId: 'empresaId'
@@ -132,6 +134,8 @@ export type ClienteScalarFieldEnum = (typeof ClienteScalarFieldEnum)[keyof typeo
 export const OrcamentoScalarFieldEnum = {
   id: 'id',
   estado: 'estado',
+  tokenPublico: 'tokenPublico',
+  lembreteEnviado: 'lembreteEnviado',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   clienteId: 'clienteId',
@@ -158,6 +162,7 @@ export const TrabalhoScalarFieldEnum = {
   data: 'data',
   notas: 'notas',
   estado: 'estado',
+  lembreteEnviado: 'lembreteEnviado',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   clienteId: 'clienteId',

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
+import { validarNif } from "@/lib/validacoes";
 
 export async function POST(request: NextRequest) {
   try {
@@ -17,6 +18,13 @@ export async function POST(request: NextRequest) {
     if (password.length < 8) {
       return NextResponse.json(
         { error: "A password tem de ter pelo menos 8 caracteres" },
+        { status: 400 }
+      );
+    }
+
+    if (!validarNif(nif)) {
+      return NextResponse.json(
+        { error: "O NIF indicado não é válido" },
         { status: 400 }
       );
     }

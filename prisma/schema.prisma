@@ -44,12 +44,14 @@ model Empresa {
 }
 
 model Utilizador {
-  id        String   @id @default(cuid())
-  nome      String
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                String    @id @default(cuid())
+  nome              String
+  email             String    @unique
+  password          String
+  tentativasFalhadas Int      @default(0)
+  bloqueadoAte      DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 
   empresa   Empresa @relation(fields: [empresaId], references: [id])
   empresaId String
@@ -90,10 +92,12 @@ model Cliente {
 }
 
 model Orcamento {
-  id        String          @id @default(cuid())
-  estado    EstadoOrcamento @default(PENDENTE)
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt
+  id              String          @id @default(cuid())
+  estado          EstadoOrcamento @default(PENDENTE)
+  tokenPublico    String          @unique @default(uuid())
+  lembreteEnviado Boolean         @default(false)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
 
   cliente   Cliente @relation(fields: [clienteId], references: [id])
   clienteId String
@@ -104,6 +108,7 @@ model Orcamento {
   linhas LinhaOrcamento[]
 
   @@index([empresaId])
+  @@index([tokenPublico])
 }
 
 model LinhaOrcamento {
@@ -120,12 +125,13 @@ model LinhaOrcamento {
 }
 
 model Trabalho {
-  id        String         @id @default(cuid())
-  data      DateTime
-  notas     String?
-  estado    EstadoTrabalho @default(AGENDADO)
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
+  id               String         @id @default(cuid())
+  data             DateTime
+  notas            String?
+  estado           EstadoTrabalho @default(AGENDADO)
+  lembreteEnviado  Boolean        @default(false)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
 
   cliente   Cliente @relation(fields: [clienteId], references: [id])
   clienteId String

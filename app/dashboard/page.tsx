@@ -143,7 +143,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-[var(--color-bg)]">
-      <div className="mx-auto max-w-6xl px-6 py-10">
+      <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-10">
         <header className="mb-8">
           <h1 className="text-2xl font-semibold tracking-tight text-[var(--color-ink)]">
             Dashboard
@@ -183,7 +183,7 @@ export default function DashboardPage() {
 
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
               <ListaCard
-                titulo="Clientes novos"
+                titulo="Últimos clientes"
                 vazio={dados.clientesNovos.length === 0}
               >
                 {dados.clientesNovos.map((c) => (

@@ -44,6 +44,9 @@ export async function POST(
     const numeroOrcamento = gerarNumeroOrcamento(orcamento);
     const pdfBuffer = await gerarOrcamentoPdf(orcamento);
 
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const linkProposta = `${baseUrl}/proposta/${orcamento.tokenPublico}`;
+
     const { data: emailData, error: emailError } = await resend.emails.send({
       from: "FlowOps <orcamentos@flowops.website>",
       to: orcamento.cliente.email,
@@ -54,6 +57,11 @@ export async function POST(
           <p style="color: #57534e;">
             Segue em anexo o orçamento solicitado, da parte de
             <strong>${orcamento.empresa.nome}</strong>.
+          </p>
+          <p style="text-align: center; margin: 24px 0;">
+            <a href="${linkProposta}" style="background: #3730a3; color: #fff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">
+              Ver e responder ao orçamento
+            </a>
           </p>
           <p style="color: #57534e;">
             Qualquer questão, estamos disponíveis para ajudar.

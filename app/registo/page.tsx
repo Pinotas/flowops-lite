@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
+import { validarNif } from "@/lib/validacoes";
 
 const inputClass =
   "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500";
@@ -39,6 +40,11 @@ export default function RegistoPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setErro(null);
+
+    if (!validarNif(nif)) {
+      setErro("O NIF indicado não é válido.");
+      return;
+    }
 
     if (password.length < 8) {
       setErro("A password tem de ter pelo menos 8 caracteres.");

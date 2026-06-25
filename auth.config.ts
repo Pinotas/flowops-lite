@@ -11,6 +11,7 @@ export const authConfig: NextAuthConfig = {
   callbacks: {
     async session({ session, token }) {
       if (session.user) {
+        session.user.id = token.sub as string;
         session.user.empresaId = token.empresaId as string;
         session.user.empresaNome = token.empresaNome as string;
       }

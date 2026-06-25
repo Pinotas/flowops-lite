@@ -18,7 +18,7 @@ export async function GET() {
     const [clientesNovos, orcamentosPendentes, trabalhosHoje] =
       await Promise.all([
         prisma.cliente.findMany({
-          where: { empresaId, estado: "NOVO" },
+          where: { empresaId },
           orderBy: { createdAt: "desc" },
           take: 5,
         }),

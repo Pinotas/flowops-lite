@@ -27,6 +27,7 @@ type Orcamento = {
   clienteId: string;
   cliente: Cliente;
   linhas: LinhaOrcamento[];
+  tokenPublico: string;
 };
 
 function calcularTotal(linhas: { quantidade: number; precoUnit: number }[]) {
@@ -73,6 +74,7 @@ export default function OrcamentosPage() {
   const [aviso, setAviso] = useState<string | null>(null);
   const [atualizandoId, setAtualizandoId] = useState<string | null>(null);
   const [enviandoId, setEnviandoId] = useState<string | null>(null);
+  const [apagandoId, setApagandoId] = useState<string | null>(null);
   const [verTerminados, setVerTerminados] = useState(false);
   const [subFiltro, setSubFiltro] = useState<SubFiltro>("TODOS");
   const [preview, setPreview] = useState<Orcamento | null>(null);
@@ -162,10 +164,45 @@ export default function OrcamentosPage() {
     }
   }
 
+  async function handleApagar(orcamento: Orcamento) {
+    if (
+      !window.confirm(
+        `Apagar o orçamento de "${orcamento.cliente?.nome ?? "—"}"? Esta ação não pode ser desfeita.`
+      )
+    ) {
+      return;
+    }
+
+    setErro(null);
+    setApagandoId(orcamento.id);
+    try {
+      const res = await fetch(`/api/budgets/${orcamento.id}`, { method: "DELETE" });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Erro ao apagar orçamento");
+      }
+      await carregarDados();
+    } catch (err) {
+      setErro(err instanceof Error ? err.message : "Erro ao apagar orçamento");
+    } finally {
+      setApagandoId(null);
+    }
+  }
+
   function fecharPreview() {
     if (previewUrl) URL.revokeObjectURL(previewUrl);
     setPreview(null);
     setPreviewUrl(null);
+  }
+
+  async function handleCopiarLink(orcamento: Orcamento) {
+    const link = `${window.location.origin}/proposta/${orcamento.tokenPublico}`;
+    try {
+      await navigator.clipboard.writeText(link);
+      setAviso("Link copiado para a área de transferência.");
+    } catch {
+      setErro("Não foi possível copiar o link.");
+    }
   }
 
   function handleToggleTerminados() {
@@ -191,7 +228,7 @@ export default function OrcamentosPage() {
 
   return (
     <div className="min-h-screen bg-[var(--color-bg)]">
-      <div className="mx-auto max-w-6xl px-6 py-10">
+      <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-10">
         <header className="mb-8 flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight text-[var(--color-ink)]">
@@ -324,12 +361,20 @@ export default function OrcamentosPage() {
                         </option>
                       ))}
                     </select>
+                    <button
+                      onClick={() => handleApagar(orcamento)}
+                      disabled={apagandoId === orcamento.id}
+                      className="rounded-full bg-white/60 px-2.5 py-1 text-xs font-medium text-[var(--color-ink-muted)] hover:text-[var(--color-danger)] disabled:opacity-50"
+                    >
+                      Apagar
+                    </button>
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <table className="w-full text-left text-sm">
+            <div className="overflow-x-auto">
+            <table className="w-full min-w-[640px] text-left text-sm">
               <thead>
                 <tr className="border-b border-[var(--color-border)] text-xs uppercase tracking-wide text-[var(--color-ink-faint)]">
                   <th className="px-5 py-3 font-medium">Cliente</th>
@@ -386,6 +431,12 @@ export default function OrcamentosPage() {
                         >
                           Ver
                         </button>
+                        <a
+                          href={`/orcamentos/${orcamento.id}/editar`}
+                          className="rounded-md border border-[var(--color-border)] px-2.5 py-1 text-xs font-medium text-[var(--color-ink-muted)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
+                        >
+                          Editar
+                        </a>
                         <button
                           onClick={() => handleEnviarEmail(orcamento)}
                           disabled={enviandoId === orcamento.id}
@@ -395,12 +446,20 @@ export default function OrcamentosPage() {
                             ? "A enviar..."
                             : "Enviar por email"}
                         </button>
+                        <button
+                          onClick={() => handleApagar(orcamento)}
+                          disabled={apagandoId === orcamento.id}
+                          className="rounded-md border border-[var(--color-border)] px-2.5 py-1 text-xs font-medium text-[var(--color-ink-muted)] transition-colors hover:border-[var(--color-danger)] hover:text-[var(--color-danger)] disabled:opacity-50"
+                        >
+                          {apagandoId === orcamento.id ? "A apagar..." : "Apagar"}
+                        </button>
                       </div>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+            </div>
           )}
         </div>
       </div>
@@ -414,7 +473,7 @@ export default function OrcamentosPage() {
             onClick={(e) => e.stopPropagation()}
             className="flex h-[90vh] w-full max-w-3xl flex-col overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]"
           >
-            <div className="flex items-center justify-between border-b border-[var(--color-border)] px-5 py-3">
+            <div className="flex flex-col gap-2 border-b border-[var(--color-border)] px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-5">
               <div>
                 <h2 className="text-sm font-semibold text-[var(--color-ink)]">
                   {preview.cliente?.nome ?? "—"}
@@ -425,7 +484,19 @@ export default function OrcamentosPage() {
                   {ESTADO_LABEL[preview.estado]}
                 </span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <a
+                  href={`/orcamentos/${preview.id}/editar`}
+                  className="rounded-lg border border-[var(--color-border)] px-3 py-1.5 text-xs font-medium text-[var(--color-ink-muted)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
+                >
+                  Editar
+                </a>
+                <button
+                  onClick={() => handleCopiarLink(preview)}
+                  className="rounded-lg border border-[var(--color-border)] px-3 py-1.5 text-xs font-medium text-[var(--color-ink-muted)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
+                >
+                  Copiar link
+                </button>
                 <button
                   onClick={() => {
                     handleEnviarEmail(preview);
@@ -435,6 +506,16 @@ export default function OrcamentosPage() {
                   className="rounded-lg bg-[var(--color-accent)] px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-[var(--color-accent-hover)] disabled:opacity-50"
                 >
                   {enviandoId === preview.id ? "A enviar..." : "Enviar por email"}
+                </button>
+                <button
+                  onClick={() => {
+                    const orcamento = preview;
+                    fecharPreview();
+                    handleApagar(orcamento);
+                  }}
+                  className="rounded-lg border border-[var(--color-border)] px-3 py-1.5 text-xs font-medium text-[var(--color-ink-muted)] transition-colors hover:border-[var(--color-danger)] hover:text-[var(--color-danger)]"
+                >
+                  Apagar
                 </button>
                 <button
                   onClick={fecharPreview}

@@ -26,6 +26,18 @@ export async function POST(request: NextRequest) {
           { status: 400 }
         );
       }
+      if (Number(linha.precoUnit) <= 0) {
+        return NextResponse.json(
+          { error: "O preço unitário tem de ser maior que zero" },
+          { status: 400 }
+        );
+      }
+      if (linha.quantidade != null && Number(linha.quantidade) <= 0) {
+        return NextResponse.json(
+          { error: "A quantidade tem de ser maior que zero" },
+          { status: 400 }
+        );
+      }
     }
 
     // Confirma que o cliente indicado pertence mesmo a esta empresa
