@@ -14,6 +14,7 @@ export const authConfig: NextAuthConfig = {
         session.user.id = token.sub as string;
         session.user.empresaId = token.empresaId as string;
         session.user.empresaNome = token.empresaNome as string;
+        session.user.empresaLogoUrl = (token.empresaLogoUrl as string | null) ?? null;
       }
       return session;
     },

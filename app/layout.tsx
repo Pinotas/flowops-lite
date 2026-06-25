@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import NavBar from "@/components/navbar";
+import AppShell from "@/components/AppShell";
 import AuthProvider from "@/components/AuthProvider";
+import { ThemeProvider } from "@/components/ThemeProvider";
+import { LocaleProvider } from "@/components/LocaleProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -21,11 +23,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt" className={inter.variable}>
+    <html lang="pt" className={inter.variable} suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{if(localStorage.getItem("flowops-tema")==="dark"){document.documentElement.classList.add("dark")}}catch(e){}`,
+          }}
+        />
+      </head>
       <body>
         <AuthProvider>
-          <NavBar />
-          {children}
+          <ThemeProvider>
+            <LocaleProvider>
+              <AppShell>{children}</AppShell>
+            </LocaleProvider>
+          </ThemeProvider>
         </AuthProvider>
       </body>
     </html>

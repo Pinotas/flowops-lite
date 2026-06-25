@@ -2,6 +2,8 @@
 
 import { useEffect, useState, useRef } from "react";
 import { useSession } from "next-auth/react";
+import PageHeader from "@/components/PageHeader";
+import { useLocale } from "@/components/LocaleProvider";
 
 type Empresa = {
   id: string;
@@ -22,7 +24,8 @@ const inputClass =
   "w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-ink)] placeholder:text-[var(--color-ink-faint)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]";
 
 export default function PerfilPage() {
-  const { data: sessao } = useSession();
+  const { data: sessao, update: atualizarSessao } = useSession();
+  const { t } = useLocale();
   const [empresa, setEmpresa] = useState<Empresa | null>(null);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
@@ -158,6 +161,7 @@ export default function PerfilPage() {
 
       setEmpresa((prev) => (prev ? { ...prev, logoUrl: data.logoUrl } : prev));
       setAviso("Logotipo atualizado com sucesso.");
+      await atualizarSessao({ empresaLogoUrl: data.logoUrl });
     } catch (err) {
       setErro(
         err instanceof Error ? err.message : "Erro ao enviar o logotipo"
@@ -199,15 +203,18 @@ export default function PerfilPage() {
   return (
     <div className="min-h-screen bg-[var(--color-bg)]">
       <div className="mx-auto max-w-2xl px-4 py-6 sm:px-6 sm:py-10">
-        <header className="mb-8">
-          <h1 className="text-2xl font-semibold tracking-tight text-[var(--color-ink)]">
-            Perfil da empresa
-          </h1>
-          <p className="mt-1 text-sm text-[var(--color-ink-muted)]">
-            Estes dados são usados nos PDFs de orçamentos enviados aos
-            clientes.
-          </p>
-        </header>
+        <PageHeader
+          titulo={t.perfil.titulo}
+          subtitulo={t.perfil.subtitulo}
+          corIcone="#3730a3"
+          icone={
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <circle cx="10" cy="10" r="7.5" stroke="currentColor" strokeWidth="1.5" />
+              <path d="M10 10.5a2.3 2.3 0 1 0 0-4.6 2.3 2.3 0 0 0 0 4.6Z" stroke="currentColor" strokeWidth="1.5" />
+              <path d="M5 15.3c.9-1.8 2.7-2.8 5-2.8s4.1 1 5 2.8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+          }
+        />
 
         {loading ? (
           <p className="text-sm text-[var(--color-ink-muted)]">A carregar...</p>
@@ -310,7 +317,7 @@ export default function PerfilPage() {
 
         <div className="mt-8 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
           <h2 className="mb-1 text-sm font-semibold text-[var(--color-ink)]">
-            Equipa
+            {t.perfil.equipa}
           </h2>
           <p className="mb-4 text-xs text-[var(--color-ink-muted)]">
             Convida outras pessoas da tua empresa a usar o FlowOps com a mesma conta.
@@ -378,7 +385,7 @@ export default function PerfilPage() {
 
         <div className="mt-8 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
           <h2 className="mb-1 text-sm font-semibold text-[var(--color-ink)]">
-            Segurança
+            {t.perfil.seguranca}
           </h2>
           <p className="mb-4 text-xs text-[var(--color-ink-muted)]">
             Muda a password da tua conta.
@@ -387,7 +394,7 @@ export default function PerfilPage() {
             href="/perfil/password"
             className="inline-block rounded-lg bg-[var(--color-accent)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[var(--color-accent-hover)]"
           >
-            Mudar password
+            {t.perfil.mudarPassword}
           </a>
         </div>
       </div>

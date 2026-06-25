@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { encontrarPaisPorCodigo } from "@/lib/paises";
 import { SeletorPais } from "@/components/SeletorPais";
+import PageHeader from "@/components/PageHeader";
+import { useLocale } from "@/components/LocaleProvider";
 
 type Cliente = {
   id: string;
@@ -17,6 +19,7 @@ const inputClass =
   "w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-ink)] placeholder:text-[var(--color-ink-faint)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]";
 
 export default function ClientesPage() {
+  const { t } = useLocale();
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -194,24 +197,27 @@ export default function ClientesPage() {
   return (
     <div className="min-h-screen bg-[var(--color-bg)]">
       <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-10">
-        <header className="mb-8">
-          <h1 className="text-2xl font-semibold tracking-tight text-[var(--color-ink)]">
-            Clientes
-          </h1>
-          <p className="mt-1 text-sm text-[var(--color-ink-muted)]">
-            {clientes.length} cliente{clientes.length !== 1 ? "s" : ""}
-          </p>
-        </header>
+        <PageHeader
+          titulo={t.clientes.titulo}
+          subtitulo={t.clientes.contagem(clientes.length)}
+          corIcone="#3730a3"
+          icone={
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <circle cx="10" cy="6.5" r="3" stroke="currentColor" strokeWidth="1.5" />
+              <path d="M3.5 17c0-3.3 2.9-6 6.5-6s6.5 2.7 6.5 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+          }
+        />
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[360px_1fr]">
           <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5">
             <h2 className="mb-4 text-sm font-semibold text-[var(--color-ink)]">
-              Novo cliente
+              {t.clientes.novoCliente}
             </h2>
             <form onSubmit={handleSubmit} className="space-y-3">
               <div>
                 <label className="mb-1 block text-xs font-medium text-[var(--color-ink-muted)]">
-                  Nome *
+                  {t.clientes.nome} *
                 </label>
                 <input
                   type="text"
@@ -223,7 +229,7 @@ export default function ClientesPage() {
               </div>
               <div>
                 <label className="mb-1 block text-xs font-medium text-[var(--color-ink-muted)]">
-                  Telefone
+                  {t.clientes.telefone}
                 </label>
                 <div className="flex gap-2">
                   <SeletorPais codigoPais={codigoPais} onChange={handleCodigoPaisChange} />
@@ -239,7 +245,7 @@ export default function ClientesPage() {
               </div>
               <div>
                 <label className="mb-1 block text-xs font-medium text-[var(--color-ink-muted)]">
-                  Email
+                  {t.clientes.email}
                 </label>
                 <input
                   type="email"
@@ -251,7 +257,7 @@ export default function ClientesPage() {
               </div>
               <div>
                 <label className="mb-1 block text-xs font-medium text-[var(--color-ink-muted)]">
-                  Morada
+                  {t.clientes.morada}
                 </label>
                 <input
                   type="text"
@@ -271,7 +277,7 @@ export default function ClientesPage() {
                 disabled={submitting}
                 className="w-full rounded-lg bg-[var(--color-accent)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[var(--color-accent-hover)] disabled:opacity-50"
               >
-                {submitting ? "A guardar..." : "Adicionar cliente"}
+                {submitting ? t.comum.aGuardar : t.clientes.adicionarCliente}
               </button>
             </form>
           </div>
@@ -281,118 +287,212 @@ export default function ClientesPage() {
               <p className="p-6 text-sm text-[var(--color-ink-muted)]">A carregar...</p>
             ) : clientes.length === 0 ? (
               <p className="p-6 text-sm text-[var(--color-ink-muted)]">
-                Ainda não há clientes. Adiciona o primeiro à esquerda.
+                {t.clientes.semClientes}
               </p>
             ) : (
-              <div className="overflow-x-auto">
-              <table className="w-full min-w-[480px] text-left text-sm">
-                <thead>
-                  <tr className="border-b border-[var(--color-border)] text-xs uppercase tracking-wide text-[var(--color-ink-faint)]">
-                    <th className="px-5 py-3 font-medium">Nome</th>
-                    <th className="px-5 py-3 font-medium">Contacto</th>
-                    <th className="px-5 py-3 font-medium"></th>
-                  </tr>
-                </thead>
-                <tbody>
+              <>
+                {/* Cartões — versão mobile, sem scroll horizontal */}
+                <div className="divide-y divide-[var(--color-border)] sm:hidden">
                   {clientes.map((cliente) =>
                     editandoId === cliente.id ? (
-                      <tr key={cliente.id} className="border-b border-[var(--color-border)] last:border-0 bg-[var(--color-bg)]">
-                        <td colSpan={3} className="px-5 py-4">
-                          <form onSubmit={handleGuardarEdicao} className="grid gap-2 sm:grid-cols-2">
-                            <input
-                              type="text"
-                              value={editNome}
-                              onChange={(e) => setEditNome(e.target.value)}
-                              className={inputClass}
-                              placeholder="Nome"
-                            />
-                            <input
-                              type="text"
-                              value={editTelefone}
-                              onChange={(e) => setEditTelefone(e.target.value)}
-                              className={inputClass}
-                              placeholder="Telefone"
-                            />
-                            <input
-                              type="email"
-                              value={editEmail}
-                              onChange={(e) => setEditEmail(e.target.value)}
-                              className={inputClass}
-                              placeholder="Email"
-                            />
-                            <input
-                              type="text"
-                              value={editMorada}
-                              onChange={(e) => setEditMorada(e.target.value)}
-                              className={inputClass}
-                              placeholder="Morada"
-                            />
-                            {erro && (
-                              <p className="col-span-2 text-xs font-medium text-[var(--color-danger)]">{erro}</p>
-                            )}
-                            <div className="col-span-2 flex gap-2">
-                              <button
-                                type="submit"
-                                disabled={guardandoEdicao}
-                                className="rounded-lg bg-[var(--color-accent)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[var(--color-accent-hover)] disabled:opacity-50"
-                              >
-                                {guardandoEdicao ? "A guardar..." : "Guardar"}
-                              </button>
-                              <button
-                                type="button"
-                                onClick={cancelarEdicao}
-                                className="rounded-lg border border-[var(--color-border)] px-4 py-2 text-sm font-medium text-[var(--color-ink-muted)] hover:bg-[var(--color-surface)]"
-                              >
-                                Cancelar
-                              </button>
-                            </div>
-                          </form>
-                        </td>
-                      </tr>
-                    ) : (
-                      <tr
-                        key={cliente.id}
-                        className="border-b border-[var(--color-border)] last:border-0"
-                      >
-                        <td className="px-5 py-3">
-                          <div className="font-medium text-[var(--color-ink)]">
-                            {cliente.nome}
-                          </div>
-                          {cliente.morada && (
-                            <div className="text-xs text-[var(--color-ink-faint)]">
-                              {cliente.morada}
-                            </div>
+                      <div key={cliente.id} className="bg-[var(--color-bg)] p-4">
+                        <form onSubmit={handleGuardarEdicao} className="space-y-2">
+                          <input
+                            type="text"
+                            value={editNome}
+                            onChange={(e) => setEditNome(e.target.value)}
+                            className={inputClass}
+                            placeholder="Nome"
+                          />
+                          <input
+                            type="text"
+                            value={editTelefone}
+                            onChange={(e) => setEditTelefone(e.target.value)}
+                            className={inputClass}
+                            placeholder="Telefone"
+                          />
+                          <input
+                            type="email"
+                            value={editEmail}
+                            onChange={(e) => setEditEmail(e.target.value)}
+                            className={inputClass}
+                            placeholder="Email"
+                          />
+                          <input
+                            type="text"
+                            value={editMorada}
+                            onChange={(e) => setEditMorada(e.target.value)}
+                            className={inputClass}
+                            placeholder="Morada"
+                          />
+                          {erro && (
+                            <p className="text-xs font-medium text-[var(--color-danger)]">{erro}</p>
                           )}
-                        </td>
-                        <td className="px-5 py-3 text-[var(--color-ink-muted)]">
-                          <div>{cliente.telefone || "—"}</div>
+                          <div className="flex gap-2">
+                            <button
+                              type="submit"
+                              disabled={guardandoEdicao}
+                              className="flex-1 rounded-full bg-[var(--color-accent)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[var(--color-accent-hover)] disabled:opacity-50"
+                            >
+                              {guardandoEdicao ? "A guardar..." : "Guardar"}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={cancelarEdicao}
+                              className="flex-1 rounded-full border border-[var(--color-border)] px-4 py-2 text-sm font-medium text-[var(--color-ink-muted)] hover:bg-[var(--color-surface)]"
+                            >
+                              Cancelar
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                    ) : (
+                      <div key={cliente.id} className="p-4">
+                        <div className="font-medium text-[var(--color-ink)]">
+                          {cliente.nome}
+                        </div>
+                        {cliente.morada && (
                           <div className="text-xs text-[var(--color-ink-faint)]">
-                            {cliente.email || ""}
+                            {cliente.morada}
                           </div>
-                        </td>
-                        <td className="px-5 py-3 text-right">
-                          <div className="flex items-center justify-end gap-2">
-                            <button
-                              onClick={() => iniciarEdicao(cliente)}
-                              className="rounded-md border border-[var(--color-border)] px-2.5 py-1 text-xs font-medium text-[var(--color-ink-muted)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
-                            >
-                              Editar
-                            </button>
-                            <button
-                              onClick={() => handleApagar(cliente)}
-                              disabled={apagandoId === cliente.id}
-                              className="rounded-md border border-[var(--color-border)] px-2.5 py-1 text-xs font-medium text-[var(--color-ink-muted)] transition-colors hover:border-[var(--color-danger)] hover:text-[var(--color-danger)] disabled:opacity-50"
-                            >
-                              {apagandoId === cliente.id ? "A apagar..." : "Apagar"}
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
+                        )}
+                        <div className="mt-1 text-sm text-[var(--color-ink-muted)]">
+                          {cliente.telefone || "—"}
+                        </div>
+                        <div className="text-xs text-[var(--color-ink-faint)]">
+                          {cliente.email || ""}
+                        </div>
+                        <div className="mt-3 flex gap-2">
+                          <button
+                            onClick={() => iniciarEdicao(cliente)}
+                            className="flex-1 rounded-full border border-[var(--color-border)] px-3 py-1.5 text-xs font-medium text-[var(--color-ink-muted)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
+                          >
+                            {t.comum.editar}
+                          </button>
+                          <button
+                            onClick={() => handleApagar(cliente)}
+                            disabled={apagandoId === cliente.id}
+                            className="flex-1 rounded-full border border-[var(--color-border)] px-3 py-1.5 text-xs font-medium text-[var(--color-ink-muted)] transition-colors hover:border-[var(--color-danger)] hover:text-[var(--color-danger)] disabled:opacity-50"
+                          >
+                            {apagandoId === cliente.id ? t.comum.aApagar : t.comum.apagar}
+                          </button>
+                        </div>
+                      </div>
                     )
                   )}
-                </tbody>
-              </table>
-              </div>
+                </div>
+
+                {/* Tabela — versão desktop/tablet */}
+                <div className="hidden overflow-x-auto sm:block">
+                <table className="w-full min-w-[480px] text-left text-sm">
+                  <thead>
+                    <tr className="border-b border-[var(--color-border)] text-xs uppercase tracking-wide text-[var(--color-ink-faint)]">
+                      <th className="px-5 py-3 font-medium">Nome</th>
+                      <th className="px-5 py-3 font-medium">Contacto</th>
+                      <th className="px-5 py-3 font-medium"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {clientes.map((cliente) =>
+                      editandoId === cliente.id ? (
+                        <tr key={cliente.id} className="border-b border-[var(--color-border)] last:border-0 bg-[var(--color-bg)]">
+                          <td colSpan={3} className="px-5 py-4">
+                            <form onSubmit={handleGuardarEdicao} className="grid gap-2 sm:grid-cols-2">
+                              <input
+                                type="text"
+                                value={editNome}
+                                onChange={(e) => setEditNome(e.target.value)}
+                                className={inputClass}
+                                placeholder="Nome"
+                              />
+                              <input
+                                type="text"
+                                value={editTelefone}
+                                onChange={(e) => setEditTelefone(e.target.value)}
+                                className={inputClass}
+                                placeholder="Telefone"
+                              />
+                              <input
+                                type="email"
+                                value={editEmail}
+                                onChange={(e) => setEditEmail(e.target.value)}
+                                className={inputClass}
+                                placeholder="Email"
+                              />
+                              <input
+                                type="text"
+                                value={editMorada}
+                                onChange={(e) => setEditMorada(e.target.value)}
+                                className={inputClass}
+                                placeholder="Morada"
+                              />
+                              {erro && (
+                                <p className="col-span-2 text-xs font-medium text-[var(--color-danger)]">{erro}</p>
+                              )}
+                              <div className="col-span-2 flex gap-2">
+                                <button
+                                  type="submit"
+                                  disabled={guardandoEdicao}
+                                  className="rounded-lg bg-[var(--color-accent)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[var(--color-accent-hover)] disabled:opacity-50"
+                                >
+                                  {guardandoEdicao ? "A guardar..." : "Guardar"}
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={cancelarEdicao}
+                                  className="rounded-lg border border-[var(--color-border)] px-4 py-2 text-sm font-medium text-[var(--color-ink-muted)] hover:bg-[var(--color-surface)]"
+                                >
+                                  Cancelar
+                                </button>
+                              </div>
+                            </form>
+                          </td>
+                        </tr>
+                      ) : (
+                        <tr
+                          key={cliente.id}
+                          className="border-b border-[var(--color-border)] last:border-0"
+                        >
+                          <td className="px-5 py-3">
+                            <div className="font-medium text-[var(--color-ink)]">
+                              {cliente.nome}
+                            </div>
+                            {cliente.morada && (
+                              <div className="text-xs text-[var(--color-ink-faint)]">
+                                {cliente.morada}
+                              </div>
+                            )}
+                          </td>
+                          <td className="px-5 py-3 text-[var(--color-ink-muted)]">
+                            <div>{cliente.telefone || "—"}</div>
+                            <div className="text-xs text-[var(--color-ink-faint)]">
+                              {cliente.email || ""}
+                            </div>
+                          </td>
+                          <td className="px-5 py-3 text-right">
+                            <div className="flex items-center justify-end gap-2">
+                              <button
+                                onClick={() => iniciarEdicao(cliente)}
+                                className="rounded-md border border-[var(--color-border)] px-2.5 py-1 text-xs font-medium text-[var(--color-ink-muted)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
+                              >
+                                {t.comum.editar}
+                              </button>
+                              <button
+                                onClick={() => handleApagar(cliente)}
+                                disabled={apagandoId === cliente.id}
+                                className="rounded-md border border-[var(--color-border)] px-2.5 py-1 text-xs font-medium text-[var(--color-ink-muted)] transition-colors hover:border-[var(--color-danger)] hover:text-[var(--color-danger)] disabled:opacity-50"
+                              >
+                                {apagandoId === cliente.id ? t.comum.aApagar : t.comum.apagar}
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      )
+                    )}
+                  </tbody>
+                </table>
+                </div>
+              </>
             )}
           </div>
         </div>

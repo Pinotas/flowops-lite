@@ -95,16 +95,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           email: utilizador.email,
           empresaId: utilizador.empresaId,
           empresaNome: utilizador.empresa.nome,
+          empresaLogoUrl: utilizador.empresa.logoUrl,
         };
       },
     }),
   ],
   callbacks: {
     ...authConfig.callbacks,
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
         token.empresaId = user.empresaId;
         token.empresaNome = user.empresaNome;
+        token.empresaLogoUrl = user.empresaLogoUrl;
+      }
+      if (trigger === "update" && session?.empresaLogoUrl !== undefined) {
+        token.empresaLogoUrl = session.empresaLogoUrl;
       }
       return token;
     },

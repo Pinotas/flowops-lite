@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import PageHeader from "@/components/PageHeader";
+import { useLocale } from "@/components/LocaleProvider";
 
 type EstadoTrabalho = "AGENDADO" | "EM_CURSO" | "CONCLUIDO" | "CANCELADO";
 type SubFiltro = "TODOS" | "CONCLUIDO" | "CANCELADO";
@@ -58,6 +60,7 @@ function formatarData(dataISO: string) {
 }
 
 export default function TrabalhosPage() {
+  const { t } = useLocale();
   const [trabalhos, setTrabalhos] = useState<Trabalho[]>([]);
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [loading, setLoading] = useState(true);
@@ -264,19 +267,23 @@ export default function TrabalhosPage() {
   return (
     <div className="min-h-screen bg-[var(--color-bg)]">
       <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-10">
-        <header className="mb-8">
-          <h1 className="text-2xl font-semibold tracking-tight text-[var(--color-ink)]">
-            Trabalhos
-          </h1>
-          <p className="mt-1 text-sm text-[var(--color-ink-muted)]">
-            {trabalhosVisiveis.length} trabalho{trabalhosVisiveis.length !== 1 ? "s" : ""}
-          </p>
-        </header>
+        <PageHeader
+          titulo={t.trabalhos.titulo}
+          subtitulo={t.trabalhos.contagem(trabalhosVisiveis.length)}
+          corIcone="#15803d"
+          icone={
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M7 5.5V4a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 13 4v1.5" stroke="currentColor" strokeWidth="1.5" />
+              <rect x="2.5" y="5.5" width="15" height="10.5" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
+              <path d="M2.5 10.5h15" stroke="currentColor" strokeWidth="1.5" />
+            </svg>
+          }
+        />
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[360px_1fr]">
           <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5">
             <h2 className="mb-4 text-sm font-semibold text-[var(--color-ink)]">
-              Novo trabalho
+              {t.trabalhos.novoTrabalho}
             </h2>
 
             {clientes.length === 0 && !loading ? (
@@ -438,7 +445,110 @@ export default function TrabalhosPage() {
                 ))}
               </div>
             ) : (
-              <div className="overflow-x-auto">
+              <>
+                {/* Cartões — versão mobile, sem scroll horizontal */}
+                <div className="divide-y divide-[var(--color-border)] sm:hidden">
+                  {trabalhosVisiveis.map((trabalho) =>
+                    editandoId === trabalho.id ? (
+                      <div key={trabalho.id} className="bg-[var(--color-bg)] p-4">
+                        <form onSubmit={handleGuardarEdicao} className="space-y-2">
+                          <select
+                            value={editClienteId}
+                            onChange={(e) => setEditClienteId(e.target.value)}
+                            className={inputClass}
+                          >
+                            {clientes.map((c) => (
+                              <option key={c.id} value={c.id}>
+                                {c.nome}
+                              </option>
+                            ))}
+                          </select>
+                          <input
+                            type="date"
+                            value={editData}
+                            onChange={(e) => setEditData(e.target.value)}
+                            className={inputClass}
+                          />
+                          <input
+                            type="text"
+                            value={editNotas}
+                            onChange={(e) => setEditNotas(e.target.value)}
+                            className={inputClass}
+                            placeholder="Notas"
+                          />
+                          {erro && (
+                            <p className="text-xs font-medium text-[var(--color-danger)]">{erro}</p>
+                          )}
+                          <div className="flex gap-2">
+                            <button
+                              type="submit"
+                              disabled={guardandoEdicao}
+                              className="flex-1 rounded-full bg-[var(--color-accent)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[var(--color-accent-hover)] disabled:opacity-50"
+                            >
+                              {guardandoEdicao ? "A guardar..." : "Guardar"}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={cancelarEdicao}
+                              className="flex-1 rounded-full border border-[var(--color-border)] px-4 py-2 text-sm font-medium text-[var(--color-ink-muted)] hover:bg-[var(--color-surface)]"
+                            >
+                              Cancelar
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                    ) : (
+                      <div key={trabalho.id} className="p-4">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="tabular font-medium text-[var(--color-ink)]">
+                            {formatarData(trabalho.data)}
+                          </span>
+                          <select
+                            value={trabalho.estado}
+                            disabled={atualizandoId === trabalho.id}
+                            onChange={(e) =>
+                              handleMudarEstado(
+                                trabalho.id,
+                                e.target.value as EstadoTrabalho
+                              )
+                            }
+                            className={`cursor-pointer rounded-full border-0 px-2.5 py-1 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)] ${ESTADO_COR[trabalho.estado]} ${atualizandoId === trabalho.id ? "opacity-50" : ""}`}
+                          >
+                            {Object.entries(ESTADO_LABEL).map(([valor, label]) => (
+                              <option key={valor} value={valor}>
+                                {label}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        <div className="mt-1 text-sm text-[var(--color-ink-muted)]">
+                          {trabalho.cliente?.nome ?? "—"}
+                        </div>
+                        <div className="text-xs text-[var(--color-ink-faint)]">
+                          {trabalho.notas || ""}
+                        </div>
+                        <div className="mt-3 flex gap-2">
+                          <button
+                            onClick={() => iniciarEdicao(trabalho)}
+                            className="flex-1 rounded-full border border-[var(--color-border)] px-3 py-1.5 text-xs font-medium text-[var(--color-ink-muted)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
+                          >
+                            {t.comum.editar}
+                          </button>
+                          <button
+                            onClick={() => handleApagar(trabalho)}
+                            disabled={apagandoId === trabalho.id}
+                            className="flex-1 rounded-full border border-[var(--color-border)] px-3 py-1.5 text-xs font-medium text-[var(--color-ink-muted)] transition-colors hover:border-[var(--color-danger)] hover:text-[var(--color-danger)] disabled:opacity-50"
+                          >
+                            {apagandoId === trabalho.id ? t.comum.aApagar : t.comum.apagar}
+                          </button>
+                        </div>
+                      </div>
+                    )
+                  )}
+                </div>
+
+                {/* Tabela — versão desktop/tablet */}
+                <div className="hidden overflow-x-auto sm:block">
               <table className="w-full min-w-[640px] text-left text-sm">
                 <thead>
                   <tr className="border-b border-[var(--color-border)] text-xs uppercase tracking-wide text-[var(--color-ink-faint)]">
@@ -540,14 +650,14 @@ export default function TrabalhosPage() {
                               onClick={() => iniciarEdicao(trabalho)}
                               className="rounded-md border border-[var(--color-border)] px-2.5 py-1 text-xs font-medium text-[var(--color-ink-muted)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
                             >
-                              Editar
+                              {t.comum.editar}
                             </button>
                             <button
                               onClick={() => handleApagar(trabalho)}
                               disabled={apagandoId === trabalho.id}
                               className="rounded-md border border-[var(--color-border)] px-2.5 py-1 text-xs font-medium text-[var(--color-ink-muted)] transition-colors hover:border-[var(--color-danger)] hover:text-[var(--color-danger)] disabled:opacity-50"
                             >
-                              {apagandoId === trabalho.id ? "A apagar..." : "Apagar"}
+                              {apagandoId === trabalho.id ? t.comum.aApagar : t.comum.apagar}
                             </button>
                           </div>
                         </td>
@@ -557,6 +667,7 @@ export default function TrabalhosPage() {
                 </tbody>
               </table>
               </div>
+              </>
             )}
           </div>
         </div>

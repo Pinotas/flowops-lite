@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { PdfViewer } from "@/components/PdfViewer";
+import PageHeader from "@/components/PageHeader";
+import { useLocale } from "@/components/LocaleProvider";
 
 type EstadoOrcamento = "PENDENTE" | "ENVIADO" | "ACEITE" | "REJEITADO";
 type SubFiltro = "TODOS" | "ACEITE" | "REJEITADO";
@@ -68,6 +70,7 @@ function formatarPreco(preco: number) {
 }
 
 export default function OrcamentosPage() {
+  const { t } = useLocale();
   const [orcamentos, setOrcamentos] = useState<Orcamento[]>([]);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState<string | null>(null);
@@ -229,22 +232,25 @@ export default function OrcamentosPage() {
   return (
     <div className="min-h-screen bg-[var(--color-bg)]">
       <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-10">
-        <header className="mb-8 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-[var(--color-ink)]">
-              Orçamentos
-            </h1>
-            <p className="mt-1 text-sm text-[var(--color-ink-muted)]">
-              {orcamentosVisiveis.length} orçamento{orcamentosVisiveis.length !== 1 ? "s" : ""}
-            </p>
-          </div>
-          <a
-            href="/orcamentos/novo"
-            className="rounded-lg bg-[var(--color-accent)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[var(--color-accent-hover)]"
-          >
-            + Novo orçamento
-          </a>
-        </header>
+        <PageHeader
+          titulo={t.orcamentos.titulo}
+          subtitulo={t.orcamentos.contagem(orcamentosVisiveis.length)}
+          corIcone="#b45309"
+          icone={
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M5 2.5h7l3.5 3.5V17a.5.5 0 0 1-.5.5H5a.5.5 0 0 1-.5-.5V3a.5.5 0 0 1 .5-.5Z" stroke="currentColor" strokeWidth="1.5" />
+              <path d="M7 8h6M7 11h6M7 14h3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+          }
+          acoes={
+            <a
+              href="/orcamentos/novo"
+              className="rounded-lg bg-[var(--color-accent)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[var(--color-accent-hover)]"
+            >
+              {t.orcamentos.novoOrcamento}
+            </a>
+          }
+        />
 
         {aviso && (
           <div className="mb-4 rounded-lg border border-[var(--color-success-soft)] bg-[var(--color-success-soft)] px-4 py-2.5 text-sm font-medium text-[var(--color-success)]">
