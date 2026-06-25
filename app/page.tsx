@@ -28,7 +28,11 @@ export default function LoginPage() {
       });
 
       if (resultado?.error) {
-        setErro("Email ou password incorretos.");
+        if (resultado.code === "email-nao-existe") {
+          setErro("Este email não está registado. Verifica se o escreveste corretamente ou cria uma conta.");
+        } else {
+          setErro("Email ou password incorretos.");
+        }
         return;
       }
 
