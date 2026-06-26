@@ -345,38 +345,40 @@ export default function PerfilPage() {
             </ul>
           )}
 
-          <form onSubmit={handleConvidar} className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-            <input
-              type="text"
-              value={novoNome}
-              onChange={(e) => setNovoNome(e.target.value)}
-              className={inputClass}
-              placeholder="Nome"
-            />
-            <input
-              type="email"
-              value={novoEmail}
-              onChange={(e) => setNovoEmail(e.target.value)}
-              className={inputClass}
-              placeholder="Email"
-            />
-            <input
-              type="password"
-              value={novaPassword}
-              onChange={(e) => setNovaPassword(e.target.value)}
-              className={inputClass}
-              placeholder="Password (mín. 8 carateres)"
-            />
+          <form onSubmit={handleConvidar} className="space-y-2">
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <input
+                type="text"
+                value={novoNome}
+                onChange={(e) => setNovoNome(e.target.value)}
+                className={`${inputClass} sm:flex-1`}
+                placeholder="Nome"
+              />
+              <input
+                type="email"
+                value={novoEmail}
+                onChange={(e) => setNovoEmail(e.target.value)}
+                className={`${inputClass} sm:flex-1`}
+                placeholder="Email"
+              />
+              <input
+                type="password"
+                value={novaPassword}
+                onChange={(e) => setNovaPassword(e.target.value)}
+                className={`${inputClass} sm:flex-1`}
+                placeholder="Password (mín. 8 carateres)"
+              />
+            </div>
             {erroEquipa && (
-              <p className="col-span-3 text-xs font-medium text-[var(--color-danger)]">{erroEquipa}</p>
+              <p className="text-xs font-medium text-[var(--color-danger)]">{erroEquipa}</p>
             )}
             {avisoEquipa && (
-              <p className="col-span-3 text-xs font-medium text-[var(--color-success)]">{avisoEquipa}</p>
+              <p className="text-xs font-medium text-[var(--color-success)]">{avisoEquipa}</p>
             )}
             <button
               type="submit"
               disabled={convidando}
-              className="col-span-3 rounded-lg bg-[var(--color-accent)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[var(--color-accent-hover)] disabled:opacity-50 sm:col-span-1"
+              className="rounded-lg bg-[var(--color-accent)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[var(--color-accent-hover)] disabled:opacity-50 sm:w-auto"
             >
               {convidando ? "A convidar..." : "Convidar"}
             </button>

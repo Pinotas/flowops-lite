@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 
 const inputClass =
-  "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500";
+  "w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-ink)] placeholder:text-[var(--color-ink-faint)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]";
 
 export default function RecuperarPasswordPage() {
   const [email, setEmail] = useState("");
@@ -38,36 +38,36 @@ export default function RecuperarPasswordPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-6">
-      <div className="w-full max-w-md rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
-        <h1 className="text-xl font-semibold text-slate-900">
+    <div className="flex min-h-screen items-center justify-center bg-[var(--color-bg)] px-6">
+      <div className="w-full max-w-md rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8">
+        <h1 className="text-2xl font-semibold tracking-tight text-[var(--color-ink)]">
           Recuperar password
         </h1>
 
         {enviado ? (
           <div className="mt-6">
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-[var(--color-ink-muted)]">
               Se existir uma conta com o email <strong>{email}</strong>,
               vais receber um link para definir uma nova password. Verifica
               a tua caixa de entrada (e o spam).
             </p>
             <Link
               href="/login"
-              className="mt-4 inline-block text-sm font-medium text-slate-900 underline"
+              className="mt-4 inline-block text-sm font-medium text-[var(--color-accent)] hover:underline"
             >
               Voltar ao login
             </Link>
           </div>
         ) : (
           <>
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="mt-1 text-sm text-[var(--color-ink-muted)]">
               Indica o teu email e enviamos-te um link para definir uma
               nova password.
             </p>
 
             <form onSubmit={handleSubmit} className="mt-6 space-y-3">
               <div>
-                <label className="mb-1 block text-xs font-medium text-slate-600">
+                <label className="mb-1 block text-xs font-medium text-[var(--color-ink-muted)]">
                   Email
                 </label>
                 <input
@@ -81,13 +81,13 @@ export default function RecuperarPasswordPage() {
               </div>
 
               {erro && (
-                <p className="text-xs font-medium text-red-600">{erro}</p>
+                <p className="text-xs font-medium text-[var(--color-danger)]">{erro}</p>
               )}
 
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700 disabled:opacity-50"
+                className="w-full rounded-lg bg-[var(--color-accent)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[var(--color-accent-hover)] disabled:opacity-50"
               >
                 {submitting ? "A enviar..." : "Enviar link"}
               </button>
@@ -95,7 +95,7 @@ export default function RecuperarPasswordPage() {
 
             <Link
               href="/login"
-              className="mt-4 inline-block text-sm font-medium text-slate-500 underline"
+              className="mt-4 inline-block text-sm font-medium text-[var(--color-ink-muted)] hover:underline"
             >
               Voltar ao login
             </Link>

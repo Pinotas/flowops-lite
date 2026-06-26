@@ -330,56 +330,174 @@ export default function OrcamentosPage() {
           ) : verTerminados ? (
             <div className="space-y-2 p-4">
               {orcamentosVisiveis.map((orcamento) => (
-                <div
-                  key={orcamento.id}
-                  style={{ backgroundColor: LINHA_BG[orcamento.estado] }}
-                  className="flex flex-wrap items-center justify-between gap-3 rounded-full px-5 py-3"
-                >
-                  <button
-                    onClick={() => abrirPreview(orcamento)}
-                    className="flex flex-1 items-center gap-4 min-w-0 text-left"
+                <div key={orcamento.id}>
+                  {/* Cartão — versão mobile */}
+                  <div
+                    style={{ backgroundColor: LINHA_BG[orcamento.estado] }}
+                    className="rounded-xl p-4 sm:hidden"
                   >
-                    <span className="font-medium text-[var(--color-ink)] whitespace-nowrap underline-offset-2 hover:underline">
-                      {orcamento.cliente?.nome ?? "—"}
-                    </span>
-                    <span className="text-sm text-[var(--color-ink-muted)] truncate">
-                      {orcamento.linhas.length} item{orcamento.linhas.length !== 1 ? "s" : ""}
-                    </span>
-                  </button>
-                  <div className="flex items-center gap-4">
-                    <span className="tabular text-sm font-semibold text-[var(--color-ink)]">
-                      {formatarPreco(calcularTotal(orcamento.linhas))}
-                    </span>
-                    <select
-                      value={orcamento.estado}
-                      disabled={atualizandoId === orcamento.id}
-                      onChange={(e) =>
-                        handleMudarEstado(
-                          orcamento.id,
-                          e.target.value as EstadoOrcamento
-                        )
-                      }
-                      className={`cursor-pointer rounded-full border-0 bg-white/60 px-2.5 py-1 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)] ${atualizandoId === orcamento.id ? "opacity-50" : ""}`}
+                    <button
+                      onClick={() => abrirPreview(orcamento)}
+                      className="block w-full text-left"
                     >
-                      {Object.entries(ESTADO_LABEL).map(([valor, label]) => (
-                        <option key={valor} value={valor}>
-                          {label}
-                        </option>
-                      ))}
-                    </select>
+                      <p className="font-medium text-[var(--color-ink)] underline-offset-2 hover:underline">
+                        {orcamento.cliente?.nome ?? "—"}
+                      </p>
+                      <p className="text-sm text-[var(--color-ink-muted)]">
+                        {orcamento.linhas.length} item{orcamento.linhas.length !== 1 ? "s" : ""}
+                      </p>
+                    </button>
+                    <div className="mt-2 flex items-center justify-between">
+                      <span className="tabular text-sm font-semibold text-[var(--color-ink)]">
+                        {formatarPreco(calcularTotal(orcamento.linhas))}
+                      </span>
+                      <select
+                        value={orcamento.estado}
+                        disabled={atualizandoId === orcamento.id}
+                        onChange={(e) =>
+                          handleMudarEstado(
+                            orcamento.id,
+                            e.target.value as EstadoOrcamento
+                          )
+                        }
+                        className={`cursor-pointer rounded-full border-0 bg-white/60 px-2.5 py-1 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)] ${atualizandoId === orcamento.id ? "opacity-50" : ""}`}
+                      >
+                        {Object.entries(ESTADO_LABEL).map(([valor, label]) => (
+                          <option key={valor} value={valor}>
+                            {label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                     <button
                       onClick={() => handleApagar(orcamento)}
                       disabled={apagandoId === orcamento.id}
-                      className="rounded-full bg-white/60 px-2.5 py-1 text-xs font-medium text-[var(--color-ink-muted)] hover:text-[var(--color-danger)] disabled:opacity-50"
+                      className="mt-2 w-full rounded-full bg-white/60 px-2.5 py-1.5 text-xs font-medium text-[var(--color-ink-muted)] hover:text-[var(--color-danger)] disabled:opacity-50"
                     >
-                      Apagar
+                      {apagandoId === orcamento.id ? "A apagar..." : "Apagar"}
                     </button>
+                  </div>
+
+                  {/* Linha — versão desktop/tablet */}
+                  <div
+                    style={{ backgroundColor: LINHA_BG[orcamento.estado] }}
+                    className="hidden flex-wrap items-center justify-between gap-3 rounded-full px-5 py-3 sm:flex"
+                  >
+                    <button
+                      onClick={() => abrirPreview(orcamento)}
+                      className="flex flex-1 items-center gap-4 min-w-0 text-left"
+                    >
+                      <span className="font-medium text-[var(--color-ink)] whitespace-nowrap underline-offset-2 hover:underline">
+                        {orcamento.cliente?.nome ?? "—"}
+                      </span>
+                      <span className="text-sm text-[var(--color-ink-muted)] truncate">
+                        {orcamento.linhas.length} item{orcamento.linhas.length !== 1 ? "s" : ""}
+                      </span>
+                    </button>
+                    <div className="flex items-center gap-4">
+                      <span className="tabular text-sm font-semibold text-[var(--color-ink)]">
+                        {formatarPreco(calcularTotal(orcamento.linhas))}
+                      </span>
+                      <select
+                        value={orcamento.estado}
+                        disabled={atualizandoId === orcamento.id}
+                        onChange={(e) =>
+                          handleMudarEstado(
+                            orcamento.id,
+                            e.target.value as EstadoOrcamento
+                          )
+                        }
+                        className={`cursor-pointer rounded-full border-0 bg-white/60 px-2.5 py-1 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)] ${atualizandoId === orcamento.id ? "opacity-50" : ""}`}
+                      >
+                        {Object.entries(ESTADO_LABEL).map(([valor, label]) => (
+                          <option key={valor} value={valor}>
+                            {label}
+                          </option>
+                        ))}
+                      </select>
+                      <button
+                        onClick={() => handleApagar(orcamento)}
+                        disabled={apagandoId === orcamento.id}
+                        className="rounded-full bg-white/60 px-2.5 py-1 text-xs font-medium text-[var(--color-ink-muted)] hover:text-[var(--color-danger)] disabled:opacity-50"
+                      >
+                        Apagar
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            <>
+              {/* Cartões — versão mobile, sem scroll horizontal */}
+              <div className="divide-y divide-[var(--color-border)] sm:hidden">
+                {orcamentosVisiveis.map((orcamento) => (
+                  <div key={orcamento.id} className="p-4">
+                    <button
+                      onClick={() => abrirPreview(orcamento)}
+                      className="block text-left font-medium text-[var(--color-ink)] underline-offset-2 hover:underline"
+                    >
+                      {orcamento.cliente?.nome ?? "—"}
+                    </button>
+                    <p className="text-sm text-[var(--color-ink-muted)]">
+                      {orcamento.linhas.length} item{orcamento.linhas.length !== 1 ? "s" : ""}
+                    </p>
+                    <div className="mt-2 flex items-center justify-between">
+                      <span className="tabular text-sm font-semibold text-[var(--color-ink)]">
+                        {formatarPreco(calcularTotal(orcamento.linhas))}
+                      </span>
+                      <select
+                        value={orcamento.estado}
+                        disabled={atualizandoId === orcamento.id}
+                        onChange={(e) =>
+                          handleMudarEstado(
+                            orcamento.id,
+                            e.target.value as EstadoOrcamento
+                          )
+                        }
+                        className={`cursor-pointer rounded-full border-0 px-2.5 py-1 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)] ${ESTADO_COR[orcamento.estado]} ${atualizandoId === orcamento.id ? "opacity-50" : ""}`}
+                      >
+                        {Object.entries(ESTADO_LABEL).map(([valor, label]) => (
+                          <option key={valor} value={valor}>
+                            {label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <button
+                        onClick={() => abrirPreview(orcamento)}
+                        className="flex-1 rounded-full border border-[var(--color-border)] px-3 py-1.5 text-xs font-medium text-[var(--color-ink-muted)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
+                      >
+                        Ver
+                      </button>
+                      <a
+                        href={`/orcamentos/${orcamento.id}/editar`}
+                        className="flex-1 rounded-full border border-[var(--color-border)] px-3 py-1.5 text-center text-xs font-medium text-[var(--color-ink-muted)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
+                      >
+                        Editar
+                      </a>
+                      <button
+                        onClick={() => handleEnviarEmail(orcamento)}
+                        disabled={enviandoId === orcamento.id}
+                        className="flex-1 rounded-full border border-[var(--color-border)] px-3 py-1.5 text-xs font-medium text-[var(--color-ink-muted)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] disabled:opacity-50"
+                      >
+                        {enviandoId === orcamento.id ? "A enviar..." : "Email"}
+                      </button>
+                      <button
+                        onClick={() => handleApagar(orcamento)}
+                        disabled={apagandoId === orcamento.id}
+                        className="flex-1 rounded-full border border-[var(--color-border)] px-3 py-1.5 text-xs font-medium text-[var(--color-ink-muted)] transition-colors hover:border-[var(--color-danger)] hover:text-[var(--color-danger)] disabled:opacity-50"
+                      >
+                        {apagandoId === orcamento.id ? "A apagar..." : "Apagar"}
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Tabela — versão desktop/tablet */}
+              <div className="hidden overflow-x-auto sm:block">
             <table className="w-full min-w-[640px] text-left text-sm">
               <thead>
                 <tr className="border-b border-[var(--color-border)] text-xs uppercase tracking-wide text-[var(--color-ink-faint)]">
@@ -465,7 +583,8 @@ export default function OrcamentosPage() {
                 ))}
               </tbody>
             </table>
-            </div>
+              </div>
+            </>
           )}
         </div>
       </div>

@@ -70,9 +70,18 @@ const pt = {
     titulo: "Entrar",
     subtitulo: "Acede à tua conta FlowOps",
     entrar: "Entrar",
+    aEntrar: "A entrar...",
+    semConta: "Ainda não tens conta?",
+    criarConta: "Criar conta",
+    esqueciPassword: "Esqueci-me da password",
+    manterSessao: "Manter sessão iniciada",
   },
   registo: {
-    titulo: "Criar conta",
+    titulo: "Criar conta da empresa",
+    jaTensConta: "Já tens conta?",
+    entrar: "Entrar",
+    criarConta: "Criar conta",
+    aCriar: "A criar conta...",
   },
 };
 
@@ -146,9 +155,18 @@ const en: Dicionario = {
     titulo: "Sign in",
     subtitulo: "Access your FlowOps account",
     entrar: "Sign in",
+    aEntrar: "Signing in...",
+    semConta: "Don't have an account yet?",
+    criarConta: "Create account",
+    esqueciPassword: "Forgot my password",
+    manterSessao: "Keep me signed in",
   },
   registo: {
-    titulo: "Create account",
+    titulo: "Create your company account",
+    jaTensConta: "Already have an account?",
+    entrar: "Sign in",
+    criarConta: "Create account",
+    aCriar: "Creating account...",
   },
 };
 
@@ -220,9 +238,18 @@ const fr: Dicionario = {
     titulo: "Connexion",
     subtitulo: "Accède à ton compte FlowOps",
     entrar: "Se connecter",
+    aEntrar: "Connexion...",
+    semConta: "Tu n'as pas encore de compte ?",
+    criarConta: "Créer un compte",
+    esqueciPassword: "Mot de passe oublié",
+    manterSessao: "Rester connecté",
   },
   registo: {
-    titulo: "Créer un compte",
+    titulo: "Créer le compte de l'entreprise",
+    jaTensConta: "Tu as déjà un compte ?",
+    entrar: "Se connecter",
+    criarConta: "Créer un compte",
+    aCriar: "Création du compte...",
   },
 };
 

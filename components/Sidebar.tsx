@@ -112,13 +112,13 @@ export default function Sidebar({
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex items-center gap-2 px-5 py-5">
+        <Link href="/dashboard" onClick={onClose} className="flex items-center gap-2 px-5 py-5">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/logo-mark.png" alt="FlowOps" className="h-7 w-7" />
           <span className="text-[15px] font-semibold tracking-tight text-white">
             FlowOps
           </span>
-        </div>
+        </Link>
 
         {session?.user?.empresaNome && (
           <div className="mx-3 mb-3 rounded-lg bg-white/5 px-3 py-2.5">

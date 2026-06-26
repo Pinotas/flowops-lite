@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 
 const inputClass =
-  "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500";
+  "w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-ink)] placeholder:text-[var(--color-ink-faint)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]";
 
 export default function RedefinirPasswordPage() {
   const params = useParams();
@@ -58,20 +58,20 @@ export default function RedefinirPasswordPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-6">
-      <div className="w-full max-w-md rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
-        <h1 className="text-xl font-semibold text-slate-900">
+    <div className="flex min-h-screen items-center justify-center bg-[var(--color-bg)] px-6">
+      <div className="w-full max-w-md rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8">
+        <h1 className="text-2xl font-semibold tracking-tight text-[var(--color-ink)]">
           Definir nova password
         </h1>
 
         {sucesso ? (
-          <p className="mt-4 text-sm text-emerald-600">
+          <p className="mt-4 text-sm font-medium text-[var(--color-success)]">
             Password redefinida com sucesso! A redirecionar para o login...
           </p>
         ) : (
           <form onSubmit={handleSubmit} className="mt-6 space-y-3">
             <div>
-              <label className="mb-1 block text-xs font-medium text-slate-600">
+              <label className="mb-1 block text-xs font-medium text-[var(--color-ink-muted)]">
                 Nova password
               </label>
               <input
@@ -84,7 +84,7 @@ export default function RedefinirPasswordPage() {
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-slate-600">
+              <label className="mb-1 block text-xs font-medium text-[var(--color-ink-muted)]">
                 Confirmar password
               </label>
               <input
@@ -98,20 +98,20 @@ export default function RedefinirPasswordPage() {
             </div>
 
             {erro && (
-              <p className="text-xs font-medium text-red-600">{erro}</p>
+              <p className="text-xs font-medium text-[var(--color-danger)]">{erro}</p>
             )}
 
             <button
               type="submit"
               disabled={submitting}
-              className="w-full rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700 disabled:opacity-50"
+              className="w-full rounded-lg bg-[var(--color-accent)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[var(--color-accent-hover)] disabled:opacity-50"
             >
               {submitting ? "A guardar..." : "Redefinir password"}
             </button>
 
             <Link
               href="/login"
-              className="block text-center text-sm font-medium text-slate-500 underline"
+              className="block text-center text-sm font-medium text-[var(--color-ink-muted)] hover:underline"
             >
               Voltar ao login
             </Link>

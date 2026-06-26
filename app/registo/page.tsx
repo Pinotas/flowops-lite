@@ -5,12 +5,14 @@ import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { validarNif } from "@/lib/validacoes";
+import { useLocale } from "@/components/LocaleProvider";
 
 const inputClass =
-  "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500";
+  "w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-ink)] placeholder:text-[var(--color-ink-faint)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]";
 
 export default function RegistoPage() {
   const router = useRouter();
+  const { t } = useLocale();
   const [nomeEmpresa, setNomeEmpresa] = useState("");
   const [nif, setNif] = useState("");
   const [morada, setMorada] = useState("");
@@ -102,21 +104,21 @@ export default function RegistoPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-6">
-      <div className="w-full max-w-md rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
-        <h1 className="text-xl font-semibold text-slate-900">
-          Criar conta da empresa
+    <div className="flex min-h-screen items-center justify-center bg-[var(--color-bg)] px-6">
+      <div className="w-full max-w-md rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8">
+        <h1 className="text-2xl font-semibold tracking-tight text-[var(--color-ink)]">
+          {t.registo.titulo}
         </h1>
-        <p className="mt-1 text-sm text-slate-500">
-          Já tens conta?{" "}
-          <Link href="/login" className="font-medium text-slate-900 underline">
-            Entrar
+        <p className="mt-1 text-sm text-[var(--color-ink-muted)]">
+          {t.registo.jaTensConta}{" "}
+          <Link href="/login" className="font-medium text-[var(--color-accent)] hover:underline">
+            {t.registo.entrar}
           </Link>
         </p>
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-3">
           <div className="flex items-center gap-4">
-            <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-300 bg-slate-50">
+            <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)]">
               {logoPreviewUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -125,14 +127,14 @@ export default function RegistoPage() {
                   className="h-full w-full object-contain"
                 />
               ) : (
-                <span className="text-xs text-slate-400">Logo</span>
+                <span className="text-xs text-[var(--color-ink-faint)]">Logo</span>
               )}
             </div>
             <div>
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-50"
+                className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-1.5 text-xs font-medium text-[var(--color-ink)] transition-colors hover:bg-[var(--color-bg)]"
               >
                 {logo ? "Trocar logotipo" : "Adicionar logotipo (opcional)"}
               </button>
@@ -143,13 +145,13 @@ export default function RegistoPage() {
                 onChange={handleFileChange}
                 className="hidden"
               />
-              <p className="mt-1 text-xs text-slate-400">
+              <p className="mt-1 text-xs text-[var(--color-ink-faint)]">
                 PNG, JPEG ou WEBP. Máximo 2MB.
               </p>
             </div>
           </div>
           <div>
-            <label className="mb-1 block text-xs font-medium text-slate-600">
+            <label className="mb-1 block text-xs font-medium text-[var(--color-ink-muted)]">
               Nome da empresa
             </label>
             <input
@@ -162,7 +164,7 @@ export default function RegistoPage() {
             />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-medium text-slate-600">
+            <label className="mb-1 block text-xs font-medium text-[var(--color-ink-muted)]">
               NIF
             </label>
             <input
@@ -175,7 +177,7 @@ export default function RegistoPage() {
             />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-medium text-slate-600">
+            <label className="mb-1 block text-xs font-medium text-[var(--color-ink-muted)]">
               Morada (opcional)
             </label>
             <input
@@ -187,7 +189,7 @@ export default function RegistoPage() {
             />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-medium text-slate-600">
+            <label className="mb-1 block text-xs font-medium text-[var(--color-ink-muted)]">
               O teu nome
             </label>
             <input
@@ -200,7 +202,7 @@ export default function RegistoPage() {
             />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-medium text-slate-600">
+            <label className="mb-1 block text-xs font-medium text-[var(--color-ink-muted)]">
               Email
             </label>
             <input
@@ -213,7 +215,7 @@ export default function RegistoPage() {
             />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-medium text-slate-600">
+            <label className="mb-1 block text-xs font-medium text-[var(--color-ink-muted)]">
               Password
             </label>
             <input
@@ -227,15 +229,15 @@ export default function RegistoPage() {
           </div>
 
           {erro && (
-            <p className="text-xs font-medium text-red-600">{erro}</p>
+            <p className="text-xs font-medium text-[var(--color-danger)]">{erro}</p>
           )}
 
           <button
             type="submit"
             disabled={submitting}
-            className="w-full rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700 disabled:opacity-50"
+            className="w-full rounded-lg bg-[var(--color-accent)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[var(--color-accent-hover)] disabled:opacity-50"
           >
-            {submitting ? "A criar conta..." : "Criar conta"}
+            {submitting ? t.registo.aCriar : t.registo.criarConta}
           </button>
         </form>
       </div>

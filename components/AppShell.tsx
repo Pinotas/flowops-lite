@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { useSession, signOut } from "next-auth/react";
+import { useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
@@ -13,6 +13,23 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
   const autenticado = status === "authenticated" && !!session?.user;
   const usarSidebar = autenticado && !pathname.startsWith("/proposta");
+
+  // O cookie de sessão do Auth.js é sempre persistente (30 dias) — não há
+  // forma fiável de o tornar "de sessão" via Set-Cookie porque o próprio
+  // middleware de autenticação reemite o cookie persistente em quase todos
+  // os pedidos. Em vez disso, simulamos "terminar sessão ao fechar o
+  // browser" com sessionStorage: ao reabrir o browser (sessionStorage
+  // vazio) com "Manter sessão iniciada" desmarcado no login anterior,
+  // termina-se a sessão automaticamente.
+  useEffect(() => {
+    if (!autenticado) return;
+    const sessaoAtivaNesteBrowser = sessionStorage.getItem("flowops-sessao-ativa");
+    if (!sessaoAtivaNesteBrowser && document.cookie.includes("flowops-lembrar=0")) {
+      signOut({ callbackUrl: "/login" });
+      return;
+    }
+    sessionStorage.setItem("flowops-sessao-ativa", "1");
+  }, [autenticado]);
 
   if (!usarSidebar) {
     return (
@@ -67,9 +84,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             <path d="M3 5h14M3 10h14M3 15h14" strokeLinecap="round" />
           </svg>
         </button>
-        <span className="text-[15px] font-semibold tracking-tight text-[var(--color-ink)]">
+        <Link href="/dashboard" className="text-[15px] font-semibold tracking-tight text-[var(--color-ink)]">
           FlowOps
-        </span>
+        </Link>
       </div>
 
       <div className="md:pl-64">{children}</div>

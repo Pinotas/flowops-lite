@@ -4,14 +4,17 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
+import { useLocale } from "@/components/LocaleProvider";
 
 const inputClass =
-  "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500";
+  "w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-ink)] placeholder:text-[var(--color-ink-faint)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { t } = useLocale();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [lembrarSessao, setLembrarSessao] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
 
@@ -42,6 +45,12 @@ export default function LoginPage() {
         return;
       }
 
+      await fetch("/api/auth/lembrar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ lembrar: lembrarSessao }),
+      });
+
       router.push("/dashboard");
       router.refresh();
     } catch {
@@ -52,19 +61,21 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-6">
-      <div className="w-full max-w-md rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
-        <h1 className="text-xl font-semibold text-slate-900">Entrar</h1>
-        <p className="mt-1 text-sm text-slate-500">
-          Ainda não tens conta?{" "}
-          <Link href="/registo" className="font-medium text-slate-900 underline">
-            Criar conta
+    <div className="flex min-h-screen items-center justify-center bg-[var(--color-bg)] px-6">
+      <div className="w-full max-w-md rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8">
+        <h1 className="text-2xl font-semibold tracking-tight text-[var(--color-ink)]">
+          {t.login.titulo}
+        </h1>
+        <p className="mt-1 text-sm text-[var(--color-ink-muted)]">
+          {t.login.semConta}{" "}
+          <Link href="/registo" className="font-medium text-[var(--color-accent)] hover:underline">
+            {t.login.criarConta}
           </Link>
         </p>
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-3">
           <div>
-            <label className="mb-1 block text-xs font-medium text-slate-600">
+            <label className="mb-1 block text-xs font-medium text-[var(--color-ink-muted)]">
               Email
             </label>
             <input
@@ -77,7 +88,7 @@ export default function LoginPage() {
             />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-medium text-slate-600">
+            <label className="mb-1 block text-xs font-medium text-[var(--color-ink-muted)]">
               Password
             </label>
             <input
@@ -90,23 +101,33 @@ export default function LoginPage() {
             />
           </div>
 
+          <label className="flex items-center gap-2 text-sm text-[var(--color-ink-muted)]">
+            <input
+              type="checkbox"
+              checked={lembrarSessao}
+              onChange={(e) => setLembrarSessao(e.target.checked)}
+              className="h-4 w-4 rounded border-[var(--color-border)] text-[var(--color-accent)] focus:ring-[var(--color-accent)]"
+            />
+            {t.login.manterSessao}
+          </label>
+
           {erro && (
-            <p className="text-xs font-medium text-red-600">{erro}</p>
+            <p className="text-xs font-medium text-[var(--color-danger)]">{erro}</p>
           )}
 
           <button
             type="submit"
             disabled={submitting}
-            className="w-full rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700 disabled:opacity-50"
+            className="w-full rounded-lg bg-[var(--color-accent)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[var(--color-accent-hover)] disabled:opacity-50"
           >
-            {submitting ? "A entrar..." : "Entrar"}
+            {submitting ? t.login.aEntrar : t.login.entrar}
           </button>
 
           <Link
             href="/recuperar-password"
-            className="block text-center text-sm font-medium text-slate-500 underline"
+            className="block text-center text-sm font-medium text-[var(--color-ink-muted)] hover:underline"
           >
-            Esqueci-me da password
+            {t.login.esqueciPassword}
           </Link>
         </form>
       </div>
