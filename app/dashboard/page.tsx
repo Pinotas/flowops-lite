@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
+import CalendarioTrabalhos from "@/components/CalendarioTrabalhos";
 
 type Cliente = {
   id: string;
@@ -22,6 +23,31 @@ type Trabalho = {
   data: string;
   notas: string | null;
   cliente: Cliente;
+};
+
+type EstadoTrabalho = "AGENDADO" | "EM_CURSO" | "CONCLUIDO" | "CANCELADO";
+
+type TrabalhoCompleto = {
+  id: string;
+  data: string;
+  notas: string | null;
+  estado: EstadoTrabalho;
+  clienteId: string;
+  cliente: { id: string; nome: string };
+};
+
+const ESTADO_LABEL: Record<EstadoTrabalho, string> = {
+  AGENDADO: "Agendado",
+  EM_CURSO: "Em curso",
+  CONCLUIDO: "Concluído",
+  CANCELADO: "Cancelado",
+};
+
+const ESTADO_COR: Record<EstadoTrabalho, string> = {
+  AGENDADO: "bg-[var(--color-bg)] text-[var(--color-ink-muted)]",
+  EM_CURSO: "bg-[var(--color-warning-soft)] text-[var(--color-warning)]",
+  CONCLUIDO: "bg-[var(--color-success-soft)] text-[var(--color-success)]",
+  CANCELADO: "bg-[var(--color-danger-soft)] text-[var(--color-danger)]",
 };
 
 type DashboardData = {
@@ -100,20 +126,31 @@ function Cartao({
 
 function ListaCard({
   titulo,
+  contagem,
+  comPulso,
   vazio,
   children,
 }: {
   titulo: string;
+  contagem?: number;
+  comPulso?: boolean;
   vazio: boolean;
   children: React.ReactNode;
 }) {
   const { t } = useLocale();
   return (
     <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]">
-      <div className="border-b border-[var(--color-border)] px-5 py-3">
+      <div className="flex items-center gap-2 border-b border-[var(--color-border)] px-5 py-3">
         <h2 className="text-sm font-semibold text-[var(--color-ink)]">
           {titulo}
+          {typeof contagem === "number" && ` (${contagem})`}
         </h2>
+        {comPulso && (contagem ?? 0) > 0 && (
+          <span className="relative flex h-1.5 w-1.5">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--color-accent)] opacity-60" />
+            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]" />
+          </span>
+        )}
       </div>
       {vazio ? (
         <p className="p-5 text-sm text-[var(--color-ink-faint)]">
@@ -129,16 +166,23 @@ function ListaCard({
 export default function DashboardPage() {
   const { t, idioma } = useLocale();
   const [dados, setDados] = useState<DashboardData | null>(null);
+  const [trabalhosTodos, setTrabalhosTodos] = useState<TrabalhoCompleto[]>([]);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState<string | null>(null);
 
   useEffect(() => {
     async function carregar() {
       try {
-        const res = await fetch("/api/dashboard");
-        if (!res.ok) throw new Error("Erro ao carregar dashboard");
-        const data = await res.json();
+        const [resDashboard, resTrabalhos] = await Promise.all([
+          fetch("/api/dashboard"),
+          fetch("/api/jobs"),
+        ]);
+        if (!resDashboard.ok) throw new Error("Erro ao carregar dashboard");
+        const data = await resDashboard.json();
         setDados(data);
+        if (resTrabalhos.ok) {
+          setTrabalhosTodos(await resTrabalhos.json());
+        }
       } catch {
         setErro("Não foi possível carregar o dashboard.");
       } finally {
@@ -173,7 +217,7 @@ export default function DashboardPage() {
           <p className="text-sm font-medium text-[var(--color-danger)]">{erro}</p>
         ) : dados ? (
           <>
-            <div className="mb-8 grid grid-cols-1 items-stretch gap-4 sm:grid-cols-3">
+            <div className="mb-8 grid grid-cols-1 items-stretch gap-4 sm:grid-cols-2">
               <Cartao
                 titulo={t.dashboard.clientes}
                 subtitulo={t.dashboard.clientesSub}
@@ -199,22 +243,6 @@ export default function DashboardPage() {
                   <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
                     <path d="M5 2.5h7l3.5 3.5V17a.5.5 0 0 1-.5.5H5a.5.5 0 0 1-.5-.5V3a.5.5 0 0 1 .5-.5Z" stroke="currentColor" strokeWidth="1.5" />
                     <path d="M7 8h6M7 11h6M7 14h3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                  </svg>
-                }
-              />
-              <Cartao
-                titulo={t.dashboard.trabalhosHoje}
-                subtitulo={t.dashboard.trabalhosHojeSub}
-                valor={dados.totais.trabalhosHoje}
-                corValor="text-[var(--color-accent)]"
-                href="/trabalhos"
-                comPulso
-                corIcone="#15803d"
-                icone={
-                  <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-                    <path d="M7 5.5V4a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 13 4v1.5" stroke="currentColor" strokeWidth="1.5" />
-                    <rect x="2.5" y="5.5" width="15" height="10.5" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
-                    <path d="M2.5 10.5h15" stroke="currentColor" strokeWidth="1.5" />
                   </svg>
                 }
               />
@@ -258,6 +286,8 @@ export default function DashboardPage() {
 
               <ListaCard
                 titulo={t.dashboard.trabalhosDeHoje}
+                contagem={dados.trabalhosHoje.length}
+                comPulso
                 vazio={dados.trabalhosHoje.length === 0}
               >
                 {dados.trabalhosHoje.map((trabalho) => (
@@ -272,6 +302,27 @@ export default function DashboardPage() {
                   </li>
                 ))}
               </ListaCard>
+            </div>
+
+            <div className="mt-6 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]">
+              <div className="flex items-center justify-between border-b border-[var(--color-border)] px-5 py-3">
+                <h2 className="text-sm font-semibold text-[var(--color-ink)]">
+                  {t.trabalhos.vistaCalendario}
+                </h2>
+                <Link
+                  href="/trabalhos"
+                  className="text-xs font-medium text-[var(--color-ink-muted)] underline-offset-2 hover:text-[var(--color-accent)] hover:underline"
+                >
+                  {t.comum.verTodos}
+                </Link>
+              </div>
+              <CalendarioTrabalhos
+                trabalhos={trabalhosTodos}
+                estadoLabel={ESTADO_LABEL}
+                estadoCor={ESTADO_COR}
+                somenteLeitura
+                compacto
+              />
             </div>
           </>
         ) : null}

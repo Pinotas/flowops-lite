@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import PageHeader from "@/components/PageHeader";
 import { useLocale } from "@/components/LocaleProvider";
+import CalendarioTrabalhos from "@/components/CalendarioTrabalhos";
 
 type EstadoTrabalho = "AGENDADO" | "EM_CURSO" | "CONCLUIDO" | "CANCELADO";
 type SubFiltro = "TODOS" | "CONCLUIDO" | "CANCELADO";
@@ -69,6 +70,7 @@ export default function TrabalhosPage() {
   const [atualizandoId, setAtualizandoId] = useState<string | null>(null);
   const [verTerminados, setVerTerminados] = useState(false);
   const [subFiltro, setSubFiltro] = useState<SubFiltro>("TODOS");
+  const [vista, setVista] = useState<"lista" | "calendario">("lista");
 
   const [clienteId, setClienteId] = useState("");
   const [data, setData] = useState("");
@@ -169,6 +171,8 @@ export default function TrabalhosPage() {
   }
 
   function iniciarEdicao(trabalho: Trabalho) {
+    setVista("lista");
+    setVerTerminados(false);
     setEditandoId(trabalho.id);
     setEditClienteId(trabalho.clienteId);
     setEditData(trabalho.data.slice(0, 10));
@@ -354,19 +358,44 @@ export default function TrabalhosPage() {
 
           <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]">
             <div className="flex flex-wrap items-center gap-3 border-b border-[var(--color-border)] px-5 py-3">
-              <button
-                onClick={handleToggleTerminados}
-                className={`rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
-                  verTerminados
-                    ? "bg-[var(--color-accent)] text-white"
-                    : "bg-[var(--color-bg)] text-[var(--color-ink-muted)] hover:text-[var(--color-ink)]"
-                }`}
-              >
-                Trabalhos terminados
-                {totalTerminados > 0 && ` (${totalTerminados})`}
-              </button>
+              <div className="flex items-center gap-1 rounded-full bg-[var(--color-bg)] p-1">
+                <button
+                  onClick={() => setVista("lista")}
+                  className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+                    vista === "lista"
+                      ? "bg-[var(--color-surface)] text-[var(--color-ink)] shadow-sm"
+                      : "text-[var(--color-ink-muted)] hover:text-[var(--color-ink)]"
+                  }`}
+                >
+                  {t.trabalhos.vistaLista}
+                </button>
+                <button
+                  onClick={() => setVista("calendario")}
+                  className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+                    vista === "calendario"
+                      ? "bg-[var(--color-surface)] text-[var(--color-ink)] shadow-sm"
+                      : "text-[var(--color-ink-muted)] hover:text-[var(--color-ink)]"
+                  }`}
+                >
+                  {t.trabalhos.vistaCalendario}
+                </button>
+              </div>
 
-              {verTerminados && (
+              {vista === "lista" && (
+                <button
+                  onClick={handleToggleTerminados}
+                  className={`rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
+                    verTerminados
+                      ? "bg-[var(--color-accent)] text-white"
+                      : "bg-[var(--color-bg)] text-[var(--color-ink-muted)] hover:text-[var(--color-ink)]"
+                  }`}
+                >
+                  Trabalhos terminados
+                  {totalTerminados > 0 && ` (${totalTerminados})`}
+                </button>
+              )}
+
+              {vista === "lista" && verTerminados && (
                 <div className="flex items-center gap-1">
                   {(
                     [
@@ -395,7 +424,22 @@ export default function TrabalhosPage() {
               )}
             </div>
 
-            {loading ? (
+            {vista === "calendario" ? (
+              loading ? (
+                <p className="p-6 text-sm text-[var(--color-ink-muted)]">A carregar...</p>
+              ) : (
+                <CalendarioTrabalhos
+                  trabalhos={trabalhos}
+                  estadoLabel={ESTADO_LABEL}
+                  estadoCor={ESTADO_COR}
+                  onEditar={iniciarEdicao}
+                  onApagar={handleApagar}
+                  onMudarEstado={handleMudarEstado}
+                  apagandoId={apagandoId}
+                  atualizandoId={atualizandoId}
+                />
+              )
+            ) : loading ? (
               <p className="p-6 text-sm text-[var(--color-ink-muted)]">A carregar...</p>
             ) : trabalhosVisiveis.length === 0 ? (
               <p className="p-6 text-sm text-[var(--color-ink-muted)]">
